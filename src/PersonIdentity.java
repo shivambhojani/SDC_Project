@@ -2,6 +2,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class PersonIdentity {
     private String Id;
@@ -15,19 +16,19 @@ public class PersonIdentity {
     private List<String> reference = new ArrayList<>();
     private List<String> notes = new ArrayList<>();
 
-    PersonIdentity addPerson( String name ) {
+    PersonIdentity addPerson(String name) {
         System.out.println(name);
-        createConnection conn= new createConnection();
+        createConnection conn = new createConnection();
         Connection connect = conn.startConnection();
-        ResultSet resultSet=null;
+        ResultSet resultSet = null;
         try {
             Statement statement = connect.createStatement();
-            statement.executeQuery("use "+conn.databaseName);
-            String insertQuery = "insert into person value (null, '"+name+"', null, null, null, null, null, null);";
+            statement.executeQuery("use " + conn.databaseName);
+            String insertQuery = "insert into person value (null, '" + name + "', null, null, null, null, null, null);";
             System.out.println(insertQuery);
             statement.executeUpdate(insertQuery);
 
-            String selectQuery = "select * from person where name='"+name+"'";
+            String selectQuery = "select * from person where name='" + name + "'";
             PersonIdentity pi2 = new PersonIdentity();
             pi2.setPersonName(name);
 
@@ -56,57 +57,66 @@ public class PersonIdentity {
 //            resultSet.close();
     }
 
-    Boolean recordAttributes( PersonIdentity person, Map<String, String> attributes ){
-        createConnection conn= new createConnection();
+    Boolean recordAttributes(PersonIdentity person, Map<String, String> attributes) {
+        createConnection conn = new createConnection();
         Connection connect = conn.startConnection();
         try {
             Statement statement = connect.createStatement();
             statement.executeQuery("use " + conn.databaseName);
-            int count=1;
-            String dob=null;
-            String bLocation=null;
-            String dod=null;
-            String dLocation=null;
-            String gender=null;
-            String occupation=null;
+            int count = 1;
+            String dob = null;
+            String bLocation = null;
+            String dod = null;
+            String dLocation = null;
+            String gender = null;
+            String occupation = null;
 
             //conderdeing that map key names will are dob, dLocation, dod, dLocation, gender, occupation
 
             for (Map.Entry<String, String> entry : attributes.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
-                if(key=="dob"){
-                dob = value;
-                }
-                else if(key=="bLocation"){
-                    bLocation = value;
-                }
-                else if(key=="dod"){
-                    dod=value;
-                }
-                else if(key=="dLocation"){
-                    dLocation = value;
-                }
-                else if(key=="gender"){
-                    if(value!=null) {
+                if (Objects.equals(key, "dob")) {
+                    if (value != null) {
+                        dob = value;
+                        String updateQuery = "update person set dob='" + dob + "' where p_id='" + person.getId() + "';";
+                        statement.executeUpdate(updateQuery);
+                    }
+                } else if (Objects.equals(key, "bLocation")) {
+                    if (value != null) {
+                        bLocation = value;
+                        String updateQuery = "update person set bLocation='" + bLocation + "' where p_id='" + person.getId() + "';";
+                        statement.executeUpdate(updateQuery);
+                    }
+                } else if (Objects.equals(key, "dod")) {
+                    if (value != null) {
+                        dod = value;
+                        String updateQuery = "update person set dod='" + dod + "' where p_id='" + person.getId() + "';";
+                        statement.executeUpdate(updateQuery);
+                    }
+                } else if (Objects.equals(key, "dLocation")) {
+                    if (value != null) {
+                        dLocation = value;
+                        String updateQuery = "update person set dLocation='" + dLocation + "' where p_id='" + person.getId() + "';";
+                        statement.executeUpdate(updateQuery);
+                    }
+                } else if (Objects.equals(key, "gender")) {
+                    if (value != null) {
                         gender = value;
+                        String updateQuery = "update person set gender='" + gender + "' where p_id='" + person.getId() + "';";
+                        statement.executeUpdate(updateQuery);
+                    }
+                } else if (Objects.equals(key, "occupation")) {
+                    if (value != null) {
+                        occupation = value;
+                        String updateQuery = "update person set occupation='" + occupation + "' where p_id='" + person.getId() + "';";
+                        statement.executeUpdate(updateQuery);
                     }
                 }
-                else if(key=="occupation"){
-                    if(value!=null) {
-                        occupation = value;
-                    }
-                    }
             }
-            String updateQuery="update person set dob='"+ dob +"', bLocation='"+bLocation+"', dod='"+dod+"'" +
-                    ", dLocation='"+dLocation+"', gender='"+gender+"', occupation='"+occupation+"' where p_id='"+person.getId()+"';";
-
-            System.out.println(updateQuery);
-            statement.executeUpdate(updateQuery);
+            statement.close();
             connect.close();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             System.out.println(e);
         }
 
