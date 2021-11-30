@@ -118,7 +118,6 @@ public class PersonIdentity {
         Id = id;
     }
 
-
     public String getPersonName() {
         return personName;
     }

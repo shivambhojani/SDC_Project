@@ -7,7 +7,6 @@ import java.util.Objects;
 
 public class FileIdentifier {
 
-
     private String mediaId;
     private String fileName;
     private String location;

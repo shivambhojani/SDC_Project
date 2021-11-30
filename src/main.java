@@ -10,29 +10,40 @@ public class main {
     public static void main(String[] args) {
 
         FileIdentifier fi = new FileIdentifier();
-      //  fi = fi.addMediaFile("F:\\Shivam");
+        //fi = fi.addMediaFile("F:\\Shivam");
 
 
-        Genealogy gn = new Genealogy();
-        FileIdentifier f = new FileIdentifier();
-        f = gn.findMediaFile("F:\\Shivam");
+//        Genealogy gn = new Genealogy();
+//        FileIdentifier f = new FileIdentifier();
+//        f = gn.findMediaFile("F:\\Shivam");
+//
+//        System.out.println(f.getLocation());
+//        System.out.println(f.getMediaId());
+//
+//
+//        System.out.println(fi.getMediaId());
+//        System.out.println(fi.getFileName());
+//        System.out.println(fi.getLocation());
+//
+//        Map<String, String> mediaMap = new HashMap<>();
+//        mediaMap.put("date", "27/01/1998");
+//        mediaMap.put("filename", "Dublin");
+//        f.recordMediaAttributes(f,mediaMap);
 
-        System.out.println(f.getLocation());
-        System.out.println(f.getMediaId());
+        PersonIdentity parent = new PersonIdentity();
+        Genealogy gparent = new Genealogy();
+       // parent = parent.addPerson("Ross");
+        parent = gparent.findPerson("Ross");
 
 
-        System.out.println(fi.getMediaId());
-        System.out.println(fi.getFileName());
-        System.out.println(fi.getLocation());
+        Genealogy gchild = new Genealogy();
+        PersonIdentity child = new PersonIdentity();
+       // child = child.addPerson("Emma");
+        child =gchild.findPerson("Emma");
 
-        Map<String, String> mediaMap = new HashMap<>();
-        mediaMap.put("date", "27/01/1998");
-        mediaMap.put("filename", "Dublin");
-        f.recordMediaAttributes(f,mediaMap);
 
-//        PersonIdentity pi = new PersonIdentity();
-//        Genealogy g = new Genealogy();
-//        pi = pi.addPerson("Raghav");
+        BiologicalRelation br = new BiologicalRelation();
+        br.recordChild(parent, child);
 //
 //        PersonIdentity person= g.findPerson("Raghav");
 //        System.out.println("New Id: "+person.getId());
