@@ -10,12 +10,25 @@ public class main {
     public static void main(String[] args) {
 
         FileIdentifier fi = new FileIdentifier();
-        fi = fi.addMediaFile("F:\\Dalhousie\\Term 1\\5100\\written 3\\3.3");
+      //  fi = fi.addMediaFile("F:\\Shivam");
+
+
+        Genealogy gn = new Genealogy();
+        FileIdentifier f = new FileIdentifier();
+        f = gn.findMediaFile("F:\\Shivam");
+
+        System.out.println(f.getLocation());
+        System.out.println(f.getMediaId());
+
+
         System.out.println(fi.getMediaId());
         System.out.println(fi.getFileName());
         System.out.println(fi.getLocation());
 
-
+        Map<String, String> mediaMap = new HashMap<>();
+        mediaMap.put("date", "27/01/1998");
+        mediaMap.put("filename", "Dublin");
+        f.recordMediaAttributes(f,mediaMap);
 
 //        PersonIdentity pi = new PersonIdentity();
 //        Genealogy g = new Genealogy();

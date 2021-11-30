@@ -43,18 +43,6 @@ public class PersonIdentity {
             System.out.println("Error Occured");
             return null;
         }
-
-        //pi2.setPersonName(name);
-
-//z
-//            System.out.println("Connection Successful");
-//            statement.executeQuery("use project;");
-//            statement.executeUpdate("insert into person value (null,'Shivam Bhojani', null, null, null, null, null, null);");
-//            resultSet = statement.executeQuery("select * from person;");
-//            while (resultSet.next()) {
-//                System.out.println("Person name: " + resultSet.getString("name"));
-//            }
-//            resultSet.close();
     }
 
     Boolean recordAttributes(PersonIdentity person, Map<String, String> attributes) {
@@ -63,7 +51,6 @@ public class PersonIdentity {
         try {
             Statement statement = connect.createStatement();
             statement.executeQuery("use " + conn.databaseName);
-            int count = 1;
             String dob;
             String bLocation;
             String dod;
