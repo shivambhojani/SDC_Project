@@ -59,7 +59,56 @@ public class PersonIdentity {
     Boolean recordAttributes( PersonIdentity person, Map<String, String> attributes ){
         createConnection conn= new createConnection();
         Connection connect = conn.startConnection();
+        try {
+            Statement statement = connect.createStatement();
+            statement.executeQuery("use " + conn.databaseName);
+            int count=1;
+            String dob=null;
+            String bLocation=null;
+            String dod=null;
+            String dLocation=null;
+            String gender=null;
+            String occupation=null;
 
+            //conderdeing that map key names will are dob, dLocation, dod, dLocation, gender, occupation
+
+            for (Map.Entry<String, String> entry : attributes.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                if(key=="dob"){
+                dob = value;
+                }
+                else if(key=="bLocation"){
+                    bLocation = value;
+                }
+                else if(key=="dod"){
+                    dod=value;
+                }
+                else if(key=="dLocation"){
+                    dLocation = value;
+                }
+                else if(key=="gender"){
+                    if(value!=null) {
+                        gender = value;
+                    }
+                }
+                else if(key=="occupation"){
+                    if(value!=null) {
+                        occupation = value;
+                    }
+                    }
+            }
+            String updateQuery="update person set dob='"+ dob +"', bLocation='"+bLocation+"', dod='"+dod+"'" +
+                    ", dLocation='"+dLocation+"', gender='"+gender+"', occupation='"+occupation+"' where p_id='"+person.getId()+"';";
+
+            System.out.println(updateQuery);
+            statement.executeUpdate(updateQuery);
+            connect.close();
+        }
+        catch (SQLException e)
+        {
+            System.out.println(e);
+        }
 
         return true;
     }

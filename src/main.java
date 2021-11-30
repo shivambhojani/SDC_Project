@@ -42,20 +42,15 @@ public class main {
 
         PersonIdentity pi = new PersonIdentity();
         Genealogy g = new Genealogy();
-        //pi = pi.addPerson("David");
-        PersonIdentity person= g.findPerson("Shivam Bhojani");
+        //pi = pi.addPerson("ABC");
 
+        PersonIdentity person= g.findPerson("David");
+        System.out.println("New Id: "+person.getId());
         Map<String, String> m = new HashMap<>();
         m.put("dob", "26/01/1998");
         m.put("bLocation", "USA");
         m.put("occupation", "Lawyer");
-
-       // pi.recordAttributes(pi, m);
-
-
-
-
-
+        pi.recordAttributes(person, m);
 
 //        UUID uuid= UUID.randomUUID();
 //        System.out.println(uuid);
