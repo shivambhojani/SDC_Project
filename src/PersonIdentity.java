@@ -64,12 +64,12 @@ public class PersonIdentity {
             Statement statement = connect.createStatement();
             statement.executeQuery("use " + conn.databaseName);
             int count = 1;
-            String dob = null;
-            String bLocation = null;
-            String dod = null;
-            String dLocation = null;
-            String gender = null;
-            String occupation = null;
+            String dob;
+            String bLocation;
+            String dod;
+            String dLocation;
+            String gender;
+            String occupation;
 
             //conderdeing that map key names will are dob, dLocation, dod, dLocation, gender, occupation
 
