@@ -19,16 +19,18 @@ public class PersonIdentity {
     PersonIdentity addPerson(String name) {
         System.out.println(name);
         createConnection conn = new createConnection();
-        Connection connect = conn.startConnection();
+
         ResultSet resultSet = null;
         try {
+            Connection connect = conn.startConnection();
             Statement statement = connect.createStatement();
             statement.executeQuery("use " + conn.databaseName);
+
             String insertQuery = "insert into person value (null, '" + name + "', null, null, null, null, null, null);";
-            System.out.println(insertQuery);
+
             statement.executeUpdate(insertQuery);
 
-            String selectQuery = "select * from person where name='" + name + "'";
+            String selectQuery = "select * from person order by p_id desc limit 1";
             PersonIdentity pi2 = new PersonIdentity();
             pi2.setPersonName(name);
 
@@ -36,18 +38,22 @@ public class PersonIdentity {
             while (resultSet.next()) {
                 pi2.setId(resultSet.getString("p_id"));
             }
+            statement.close();
+            resultSet.close();
             connect.close();
             return pi2;
 
         } catch (SQLException e) {
-            System.out.println("Error Occured");
+            System.out.println("e");
             return null;
         }
     }
 
+
     Boolean recordAttributes(PersonIdentity person, Map<String, String> attributes) {
         createConnection conn = new createConnection();
         Connection connect = conn.startConnection();
+        ResultSet resultSet = null;
         try {
             Statement statement = connect.createStatement();
             statement.executeQuery("use " + conn.databaseName);
@@ -67,37 +73,47 @@ public class PersonIdentity {
                     if (value != null) {
                         dob = value;
                         String updateQuery = "update person set dob='" + dob + "' where p_id='" + person.getId() + "';";
-                        statement.executeUpdate(updateQuery);
+                        try {
+                            statement.executeUpdate(updateQuery);
+                        } catch (Exception e) {
+                            System.out.println("Date of Birth format is wrong");
+                        }
+
                     }
                 } else if (Objects.equals(key, "bLocation")) {
                     if (value != null) {
                         bLocation = value;
                         String updateQuery = "update person set bLocation='" + bLocation + "' where p_id='" + person.getId() + "';";
-                        statement.executeUpdate(updateQuery);
-                    }
-                } else if (Objects.equals(key, "dod")) {
-                    if (value != null) {
-                        dod = value;
-                        String updateQuery = "update person set dod='" + dod + "' where p_id='" + person.getId() + "';";
-                        statement.executeUpdate(updateQuery);
-                    }
-                } else if (Objects.equals(key, "dLocation")) {
-                    if (value != null) {
-                        dLocation = value;
-                        String updateQuery = "update person set dLocation='" + dLocation + "' where p_id='" + person.getId() + "';";
-                        statement.executeUpdate(updateQuery);
-                    }
-                } else if (Objects.equals(key, "gender")) {
-                    if (value != null) {
-                        gender = value;
-                        String updateQuery = "update person set gender='" + gender + "' where p_id='" + person.getId() + "';";
-                        statement.executeUpdate(updateQuery);
-                    }
-                } else if (Objects.equals(key, "occupation")) {
-                    if (value != null) {
-                        occupation = value;
-                        String updateQuery = "update person set occupation='" + occupation + "' where p_id='" + person.getId() + "';";
-                        statement.executeUpdate(updateQuery);
+                        try {
+                            statement.executeUpdate(updateQuery);
+                        } catch (Exception e) {
+                            System.out.println("Date of Birth format is wrong");
+                        }
+
+                    } else if (Objects.equals(key, "dod")) {
+                        if (value != null) {
+                            dod = value;
+                            String updateQuery = "update person set dod='" + dod + "' where p_id='" + person.getId() + "';";
+                            statement.executeUpdate(updateQuery);
+                        }
+                    } else if (Objects.equals(key, "dLocation")) {
+                        if (value != null) {
+                            dLocation = value;
+                            String updateQuery = "update person set dLocation='" + dLocation + "' where p_id='" + person.getId() + "';";
+                            statement.executeUpdate(updateQuery);
+                        }
+                    } else if (Objects.equals(key, "gender")) {
+                        if (value != null) {
+                            gender = value;
+                            String updateQuery = "update person set gender='" + gender + "' where p_id='" + person.getId() + "';";
+                            statement.executeUpdate(updateQuery);
+                        }
+                    } else if (Objects.equals(key, "occupation")) {
+                        if (value != null) {
+                            occupation = value;
+                            String updateQuery = "update person set occupation='" + occupation + "' where p_id='" + person.getId() + "';";
+                            statement.executeUpdate(updateQuery);
+                        }
                     }
                 }
             }
@@ -109,6 +125,80 @@ public class PersonIdentity {
 
         return true;
     }
+
+
+    Boolean recordReference(PersonIdentity person, String reference) {
+        createConnection conn = new createConnection();
+
+        ResultSet resultSet = null;
+        try {
+            Connection connect = conn.startConnection();
+            Statement statement = connect.createStatement();
+            statement.executeQuery("use " + conn.databaseName);
+
+            resultSet = statement.executeQuery("select * from person where p_id = '" + person.getId() + "'");
+
+            if (resultSet.next() == false) {
+                statement.close();
+                resultSet.close();
+                connect.close();
+                return false;
+            } else {
+
+                String insertReference = "insert into person_references values (null,'" + person.getId() + "','" + reference + "')";
+                statement.executeUpdate(insertReference);
+
+                statement.close();
+                resultSet.close();
+                connect.close();
+                return true;
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e);
+            return false;
+
+        }
+    }
+
+    Boolean recordNote( PersonIdentity person, String note )
+    {
+        createConnection conn = new createConnection();
+
+        ResultSet resultSet = null;
+        try {
+            Connection connect = conn.startConnection();
+            Statement statement = connect.createStatement();
+            statement.executeQuery("use " + conn.databaseName);
+
+            resultSet = statement.executeQuery("select * from person where p_id = '" + person.getId() + "'");
+
+            if (resultSet.next() == false) {
+                statement.close();
+                resultSet.close();
+                connect.close();
+                return false;
+            } else {
+
+                String insertReference = "insert into person_notes values (null,'" + person.getId() + "','" + note + "')";
+                statement.executeUpdate(insertReference);
+
+                statement.close();
+                resultSet.close();
+                connect.close();
+                return true;
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e);
+            return false;
+
+        }
+    }
+
+
 
     public String getId() {
         return Id;

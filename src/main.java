@@ -30,32 +30,52 @@ public class main {
 //        mediaMap.put("filename", "Dublin");
 //        f.recordMediaAttributes(f,mediaMap);
 
-        PersonIdentity parent = new PersonIdentity();
-        Genealogy gparent = new Genealogy();
-       // parent = parent.addPerson("Ross");
-        parent = gparent.findPerson("Ross");
 
 
-        Genealogy gchild = new Genealogy();
-        PersonIdentity child = new PersonIdentity();
-       // child = child.addPerson("Emma");
-        child =gchild.findPerson("Emma");
+        /*ADD PERSON--------------------------------------------------*/
+//        PersonIdentity person = new PersonIdentity();
+//        person = person.addPerson("Rachel");
 
 
-        BiologicalRelation br = new BiologicalRelation();
-        br.recordChild(parent, child);
+
+        /*FIND PERSON AND RECORD ATTRIBUTES---------------------------*/
+//        Genealogy g = new Genealogy();
+//        PersonIdentity person2 = g.findPerson("Ross");
 //
-//        PersonIdentity person= g.findPerson("Raghav");
-//        System.out.println("New Id: "+person.getId());
+//        PersonIdentity record = new PersonIdentity();
+//        System.out.println("New Id: " + person2.getId());
 //        Map<String, String> m = new HashMap<>();
-//        m.put("dob", "27/01/1998");
+//        m.put("dob", "1998-03-20");
 //        m.put("bLocation", "Dublin");
 //        m.put("gender", null);
 //        m.put("occupation", "Teacher");
-//        pi.recordAttributes(person, m);
+//        record.recordAttributes(person2, m);
 
 
+        //person = gparent.findPerson("Ross");
 
 
+        /*RECORD CHILD------------------------------------*/
+//        Genealogy g3 = new Genealogy();
+//        PersonIdentity person3 = g3.findPerson("Chandler");
+//
+//        PersonIdentity person4 = g3.findPerson("Ben");
+//        BiologicalRelation br = new BiologicalRelation();
+//        boolean b = br.recordChild(person3, person4);
+//        System.out.println(b);
+
+
+        /*Record references and notes---------------------------*/
+//        Genealogy g4 = new Genealogy();
+//        PersonIdentity person5 = g4.findPerson("Shivam");
+//        System.out.println(person5.recordReference(person5,"Rajkot"));
+//
+//        System.out.println(person5.recordNote(person5,"Note 1"));
+
+
+        Genealogy gg = new Genealogy();
+        BiologicalRelation br = new BiologicalRelation();
+
+        System.out.println(br.recordPartnering(gg.findPerson("Ross"), gg.findPerson("Rachel"))  );
     }
 }

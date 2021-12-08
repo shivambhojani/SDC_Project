@@ -16,7 +16,6 @@ public class createConnection {
 
             connect = DriverManager.getConnection(jdbcURL, username, password);
             if (connect != null) {
-                System.out.println("Database Connected");
             }
             //resultSet.close();
             //statement.close();

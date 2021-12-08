@@ -79,8 +79,6 @@ public class FileIdentifier {
     }
 
 
-
-
     public String getMediaId() {
         return mediaId;
     }
