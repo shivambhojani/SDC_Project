@@ -23,12 +23,12 @@ public class FileIdentifier {
             Statement statement = connect.createStatement();
             statement.executeQuery("use " + conn.databaseName);
             String insertQuery = "insert into media_archieve value (null, '" + fileLocation + "', null, null);";
-            System.out.println(insertQuery);
+            //System.out.println(insertQuery);
             statement.executeUpdate(insertQuery);
             FileIdentifier f = new FileIdentifier();
             f.setLocation(fileLocation);
 
-            String selectQuery = "select * from media_archieve where location='" + fileLocation + "'";
+            String selectQuery = "select * from media_archieve order by mediaId desc limit 1";
             resultSet = statement.executeQuery(selectQuery);
             while (resultSet.next()) {
                 f.setMediaId(resultSet.getString("mediaId"));
@@ -44,6 +44,7 @@ public class FileIdentifier {
 
     Boolean recordMediaAttributes(FileIdentifier fileIdentifier, Map<String, String> attributes) {
         createConnection conn = new createConnection();
+        ResultSet resultSet = null;
 
         try {
             Connection connect = conn.startConnection();
@@ -52,6 +53,15 @@ public class FileIdentifier {
             String date;
             String filename;
 
+            /*check whether the media file exists in media_archive or not*/
+            resultSet = statement.executeQuery("select * from media_archieve where mediaId = '" + fileIdentifier.getMediaId() + "';");
+            if (resultSet.next() == false) {
+                statement.close();
+                connect.close();
+                return false;
+            }
+
+            /*Media file is there in media archive and now the attributes will be recorded from map*/
             for (Map.Entry<String, String> entry : attributes.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
@@ -59,9 +69,14 @@ public class FileIdentifier {
                     if (value != null) {
                         date = value;
                         String updateQuery = "update media_archieve set date='" + date + "' where mediaId='" + fileIdentifier.getMediaId() + "';";
-                        statement.executeUpdate(updateQuery);
+                        try {
+                            statement.executeUpdate(updateQuery);
+                        } catch (SQLException e) {
+                            System.out.println("Problem while giving date input. Date format should be yyyy-mm-dd");
+                        }
                     }
-                } else if (Objects.equals(key, "filename")) {
+                }
+                else if (Objects.equals(key, "filename")) {
                     if (value != null) {
                         filename = value;
                         String updateQuery = "update media_archieve set filename='" + filename + "' where mediaId='" + fileIdentifier.getMediaId() + "';";

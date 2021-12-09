@@ -10,25 +10,25 @@ public class main {
     public static void main(String[] args) {
 
         FileIdentifier fi = new FileIdentifier();
-        //fi = fi.addMediaFile("F:\\Shivam");
+        fi = fi.addMediaFile("F:\\Shivam");
 
 
-//        Genealogy gn = new Genealogy();
-//        FileIdentifier f = new FileIdentifier();
-//        f = gn.findMediaFile("F:\\Shivam");
-//
-//        System.out.println(f.getLocation());
-//        System.out.println(f.getMediaId());
-//
-//
-//        System.out.println(fi.getMediaId());
-//        System.out.println(fi.getFileName());
-//        System.out.println(fi.getLocation());
-//
-//        Map<String, String> mediaMap = new HashMap<>();
-//        mediaMap.put("date", "27/01/1998");
-//        mediaMap.put("filename", "Dublin");
-//        f.recordMediaAttributes(f,mediaMap);
+        Genealogy gn = new Genealogy();
+        FileIdentifier f = new FileIdentifier();
+        f = gn.findMediaFile("F://Shivam");
+
+        System.out.println(f.getLocation());
+        System.out.println(f.getMediaId());
+
+
+        System.out.println(fi.getMediaId());
+        System.out.println(fi.getFileName());
+        System.out.println(fi.getLocation());
+
+        Map<String, String> mediaMap = new HashMap<>();
+        mediaMap.put("date", "27/01/1998");
+        mediaMap.put("filename", "Dublin");
+        f.recordMediaAttributes(f,mediaMap);
 
 
 
@@ -73,9 +73,10 @@ public class main {
 //        System.out.println(person5.recordNote(person5,"Note 1"));
 
 
-        Genealogy gg = new Genealogy();
-        BiologicalRelation br = new BiologicalRelation();
-
-        System.out.println(br.recordPartnering(gg.findPerson("Ross"), gg.findPerson("Rachel"))  );
+        /*Add Relations between two perso */
+//        Genealogy gg = new Genealogy();
+//        BiologicalRelation br = new BiologicalRelation();
+//
+//        System.out.println(br.recordPartnering(gg.findPerson("Ross"), gg.findPerson("Rachel"))  );
     }
 }

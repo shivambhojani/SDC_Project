@@ -25,8 +25,7 @@ public class BiologicalRelation {
 
             /*checking if parent exists in person table*/
             resultSet1 = statement.executeQuery("select * from person where p_id='" + parent.getId() + "'");
-            if(resultSet1.next() == false)
-            {
+            if (resultSet1.next() == false) {
                 statement.close();
                 connect.close();
                 return false;
@@ -99,7 +98,7 @@ public class BiologicalRelation {
             // to check whether the partner1 is not in a relationship already
             resultSet1 = null;
             resultSet1 = statement.executeQuery("select * from partner_relation where partner1Id='" + partner1.getId() + "'" +
-                    "or partner2Id='"+ partner1.getId()+"';");
+                    "or partner2Id='" + partner1.getId() + "';");
 
             if (resultSet1.next() == true) {
                 statement.close();
@@ -110,7 +109,7 @@ public class BiologicalRelation {
             // to check whether the partner2 is not in a relationship already
             resultSet2 = null;
             resultSet2 = statement.executeQuery("select * from partner_relation where partner1Id='" + partner2.getId() + "'" +
-                    "or partner2Id='"+ partner2.getId()+"';");
+                    "or partner2Id='" + partner2.getId() + "';");
 
             if (resultSet2.next() == true) {
                 statement.close();
