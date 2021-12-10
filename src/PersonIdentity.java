@@ -1,8 +1,5 @@
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class PersonIdentity {
     private String Id;
@@ -57,7 +54,6 @@ public class PersonIdentity {
         }
     }
 
-
     Boolean recordAttributes(PersonIdentity person, Map<String, String> attributes) {
         createConnection conn = new createConnection();
         Connection connect = conn.startConnection();
@@ -86,7 +82,6 @@ public class PersonIdentity {
                         } catch (Exception e) {
                             System.out.println("Date of Birth format is wrong");
                         }
-
                     }
                 } else if (Objects.equals(key, "bLocation")) {
                     if (value != null) {
@@ -97,7 +92,6 @@ public class PersonIdentity {
                         } catch (Exception e) {
                             System.out.println("Date of Birth format is wrong");
                         }
-
                     }
                 } else if (Objects.equals(key, "dod")) {
                     if (value != null) {
@@ -108,7 +102,6 @@ public class PersonIdentity {
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
-
                     }
                 } else if (Objects.equals(key, "dLocation")) {
                     if (value != null) {
@@ -129,7 +122,6 @@ public class PersonIdentity {
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
-
                     }
                 } else if (Objects.equals(key, "occupation")) {
                     if (value != null) {
@@ -152,7 +144,6 @@ public class PersonIdentity {
         }
 
     }
-
 
     Boolean recordReference(PersonIdentity person, String reference) {
         createConnection conn = new createConnection();
@@ -223,6 +214,7 @@ public class PersonIdentity {
 
         }
     }
+
 
 
     public String getId() {

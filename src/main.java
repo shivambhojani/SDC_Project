@@ -7,6 +7,20 @@ import java.util.Date;
 public class main {
     public static void main(String[] args) {
 
+        Genealogy gene = new Genealogy();
+        PersonIdentity p1 = gene.findPerson("Chandler");
+        PersonIdentity p2 = gene.findPerson("person1");
+
+        Set<PersonIdentity> s = new HashSet<>();
+        s.add(p1);
+        s.add(p2);
+       List<FileIdentifier> file=  gene.findIndividualsMedia(s,null,null);
+
+        for(FileIdentifier ff : file)
+        {
+            System.out.println(ff.getMediaId() + ff.getFileName());
+        }
+
         /*ADD PERSON--------------------------------------------------*/
 //        PersonIdentity person1 = new PersonIdentity();
 //        person1 = person1.addPerson("person1");
@@ -87,29 +101,29 @@ public class main {
 
         /*FIND PERSON AND RECORD ATTRIBUTES---------------------------*/
         Genealogy g = new Genealogy();
-        PersonIdentity p1 = g.findPerson("person1");
-        PersonIdentity p2 = g.findPerson("person2");
-        PersonIdentity p3 = g.findPerson("person3");
-        PersonIdentity p4 = g.findPerson("person4");
-
-        System.out.println("New Id: " + p1.getId());
-        System.out.println("New Id: " + p2.getId());
-        System.out.println("New Id: " + p3.getId());
-        System.out.println("New Id: " + p4.getId());
-
-        PersonIdentity record = new PersonIdentity();
-        Map<String, String> m = new HashMap<>();
-        m.put("dob", "2000-03-20");
-        m.put("dod", "2021-03-20");
-        m.put("bLocation", "London");
-        m.put("dLocation", "Canada");
-        m.put("gender", "female");
-        m.put("occupation", "Sales Manager");
-
-        System.out.println(record.recordAttributes(p1, m));
-        System.out.println(record.recordAttributes(p2, m));
-        System.out.println(record.recordAttributes(p3, m));
-        System.out.println(record.recordAttributes(p4, m));
+//        PersonIdentity p1 = g.findPerson("Chandler");
+//        PersonIdentity p2 = g.findPerson("person1");
+//        PersonIdentity p3 = g.findPerson("person3");
+//        PersonIdentity p4 = g.findPerson("person4");
+//
+//        System.out.println("New Id: " + p1.getId());
+//        System.out.println("New Id: " + p2.getId());
+//        System.out.println("New Id: " + p3.getId());
+//        System.out.println("New Id: " + p4.getId());
+//
+//        PersonIdentity record = new PersonIdentity();
+//        Map<String, String> m = new HashMap<>();
+//        m.put("dob", "2000-03-20");
+//        m.put("dod", "2021-03-20");
+//        m.put("bLocation", "London");
+//        m.put("dLocation", "Canada");
+//        m.put("gender", "female");
+//        m.put("occupation", "Sales Manager");
+//
+//        System.out.println(record.recordAttributes(p1, m));
+//        System.out.println(record.recordAttributes(p2, m));
+//        System.out.println(record.recordAttributes(p3, m));
+//        System.out.println(record.recordAttributes(p4, m));
 
         /*RECORD CHILD------------------------------------*/
 //        Genealogy g3 = new Genealogy();

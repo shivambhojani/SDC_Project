@@ -128,6 +128,65 @@ public class Genealogy {
         }
     }
 
+    List<FileIdentifier> findIndividualsMedia(Set<PersonIdentity> people, String startDate, String
+            endDate) {
+
+        Connection connect = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        createConnection conn = new createConnection();
+
+        try {
+            connect = conn.startConnection();
+            statement = connect.createStatement();
+            statement.executeQuery("use " + conn.databaseName);
+
+            /*extracting personId and putting it in seperate array*/
+            String s = "";
+            for (PersonIdentity p : people) {
+               s = s+"'"+p.getId()+"',";
+            }
+            s=s.substring(0,s.length()-1);
+
+            String findbyPeople = "select mediaId from person_in_media where person in ("+s+") group by mediaId;";
+
+            /*getting all mediaIds*/
+            List<String> peopleInMediaList = new ArrayList<>();
+            resultSet = statement.executeQuery(findbyPeople);
+
+            while (resultSet.next()) {
+                System.out.println("MediaId = "+resultSet.getString("mediaId") );
+                peopleInMediaList.add(resultSet.getString("mediaId"));
+            }
+
+            List<FileIdentifier> mediaFiles =  new ArrayList<>();
+            for (int i=0; i< peopleInMediaList.size(); i++)
+            {
+                resultSet = null;
+                resultSet = statement.executeQuery("select * from media_archieve where mediaId='"+peopleInMediaList.get(i)+"';");
+                while (resultSet.next()) {
+                    FileIdentifier f = new FileIdentifier();
+                    f.setMediaId(resultSet.getString("mediaId"));
+                    f.setLocation(resultSet.getString("location"));
+                    f.setFileName(resultSet.getString("filename"));
+                    f.setDate(resultSet.getString("date"));
+                    mediaFiles.add(f);
+                }
+
+            }
+
+
+            statement.close();
+            connect.close();
+            return mediaFiles;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
 
     List<String> notesAndReferences(PersonIdentity person) {
         Connection connect = null;
@@ -167,4 +226,6 @@ public class Genealogy {
             return null;
         }
     }
+
+
 }
