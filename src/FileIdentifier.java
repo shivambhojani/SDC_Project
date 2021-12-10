@@ -2,6 +2,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -75,8 +77,7 @@ public class FileIdentifier {
                             System.out.println("Problem while giving date input. Date format should be yyyy-mm-dd");
                         }
                     }
-                }
-                else if (Objects.equals(key, "filename")) {
+                } else if (Objects.equals(key, "filename")) {
                     if (value != null) {
                         filename = value;
                         String updateQuery = "update media_archieve set filename='" + filename + "' where mediaId='" + fileIdentifier.getMediaId() + "';";
@@ -91,6 +92,101 @@ public class FileIdentifier {
         }
 
         return true;
+    }
+
+    Boolean tagMedia(FileIdentifier fileIdentifier, String tag) {
+        createConnection conn = new createConnection();
+        ResultSet resultSet = null;
+
+        try {
+            Connection connect = conn.startConnection();
+            Statement statement = connect.createStatement();
+            statement.executeQuery("use " + conn.databaseName);
+
+
+            /*check whether the media file exists in media_archive or not*/
+            resultSet = statement.executeQuery("select * from media_archieve where mediaId = '" + fileIdentifier.getMediaId() + "';");
+            if (resultSet.next() == false) {
+                statement.close();
+                connect.close();
+                return false;
+
+            }
+
+            String insertTags = "insert into media_tags values (null,'" + fileIdentifier.getMediaId() + "','" + tag + "')";
+            statement.executeUpdate(insertTags);
+
+            statement.close();
+            connect.close();
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /*this method will validate the media ID and all the person in media, before entering that into table*/
+    /*this method will also validation the existing record in people in media and eliminate duplicate records */
+    Boolean peopleInMedia(FileIdentifier fileIdentifier, List<PersonIdentity> people) {
+        createConnection conn = new createConnection();
+        ResultSet resultSet = null;
+
+        try {
+            Connection connect = conn.startConnection();
+            Statement statement = connect.createStatement();
+            statement.executeQuery("use " + conn.databaseName);
+
+            /*check whether the media file exists in media_archive or not*/
+            resultSet = statement.executeQuery("select * from media_archieve where mediaId = '" + fileIdentifier.getMediaId() + "';");
+            if (resultSet.next() == false) {
+                statement.close();
+                connect.close();
+                return false;
+
+            }
+
+            /*check of list of people mentioned are known to database*/
+
+            List<PersonIdentity> newpeople = new ArrayList<>();
+            String checkpeople="";
+
+            /*this loop will filter the people who are not know to databse*/
+            /*the list newpeople will have the final list of people who will go ahead*/
+            for(int i =0; i< people.size(); i++)
+            {
+                resultSet = null;
+                resultSet = statement.executeQuery("select * from person where p_id='"+people.get(i).getId()+"';");
+                if (resultSet.next()==true)
+                {
+                    newpeople.add(people.get(i));
+                }
+            }
+
+            /*adding data in peopleinmedia with newpeople list*/
+            String addPeopleinMedia="";
+            String insertpeopleinmedia="";
+            for (int i =0; i< newpeople.size(); i++)
+            {
+                /*check if that entry already exists and validate for duplication of data*/
+                resultSet=null;
+                resultSet = statement.executeQuery("select * from person_in_media where mediaId='"+fileIdentifier.getMediaId()+"' " +
+                            "and person='"+newpeople.get(i).getId()+"';");
+
+                if(resultSet.next()==false)
+                {
+                    insertpeopleinmedia="insert into person_in_media values('"+fileIdentifier.getMediaId()+"','"+newpeople.get(i).getId()+"');";
+                    statement.executeUpdate(insertpeopleinmedia);
+                }
+            }
+            statement.close();
+            connect.close();
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 

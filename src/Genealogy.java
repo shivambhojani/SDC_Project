@@ -1,4 +1,9 @@
+import javax.swing.*;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Genealogy {
 
@@ -11,8 +16,8 @@ public class Genealogy {
         try {
             connect = conn.startConnection();
             statement = connect.createStatement();
-            statement.executeQuery("use "+conn.databaseName);
-            String selectQuery = "select * from person where name='"+name+"';";
+            statement.executeQuery("use " + conn.databaseName);
+            String selectQuery = "select * from person where name='" + name + "';";
             resultSet = statement.executeQuery(selectQuery);
             while (resultSet.next()) {
 
@@ -38,8 +43,7 @@ public class Genealogy {
     }
 
     //finding media file by location attribute
-    FileIdentifier findMediaFile( String location )
-    {
+    FileIdentifier findMediaFile(String location) {
         Connection connect = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -48,8 +52,8 @@ public class Genealogy {
         try {
             connect = conn.startConnection();
             statement = connect.createStatement();
-            statement.executeQuery("use "+conn.databaseName);
-            String selectQuery = "select * from media_archieve where location='"+location+"';";
+            statement.executeQuery("use " + conn.databaseName);
+            String selectQuery = "select * from media_archieve where location='" + location + "';";
             resultSet = statement.executeQuery(selectQuery);
             while (resultSet.next()) {
 
@@ -66,5 +70,60 @@ public class Genealogy {
         }
 
         return f;
+    }
+
+
+    Set<FileIdentifier> findMediaByTag(String tag, String startDate, String endDate) {
+        Connection connect = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        createConnection conn = new createConnection();
+
+        /*Validating tag, startDate and endDate for null for null or empty value*/
+        if (tag == null) {
+            return null;
+        } else if (tag.trim().length() == 0) {
+            return null;
+        }
+        try {
+            connect = conn.startConnection();
+            statement = connect.createStatement();
+            statement.executeQuery("use " + conn.databaseName);
+
+            String findmediabytags = "";
+
+            if (startDate == null || endDate == null) {
+                findmediabytags = "select * from media_archieve where mediaId in (select mediaId from media_tags where tag = '" + tag + "');";
+            } else if (startDate.trim().length() != 0 || endDate.trim().length() != 0) {
+                findmediabytags = "select * from media_archieve where date between " + startDate + " and " + endDate + ";";
+            }
+
+            resultSet = statement.executeQuery(findmediabytags);
+
+            List<String> mediaId = new ArrayList<>();
+            while (resultSet.next()) {
+                mediaId.add(resultSet.getString("mediaId"));
+            }
+
+            Set<FileIdentifier> mediaFileset = new HashSet<>();
+            for (int i = 0; i < mediaId.size(); i++) {
+                FileIdentifier f = new FileIdentifier();
+                resultSet = statement.executeQuery("select * from media_archieve where mediaId='" + mediaId.get(i) + "';");
+                while (resultSet.next()) {
+                    f.setMediaId(resultSet.getString("mediaId"));
+                    f.setLocation(resultSet.getString("location"));
+                    f.setFileName(resultSet.getString("filename"));
+                    f.setDate(resultSet.getString("date"));
+                }
+                mediaFileset.add(f);
+            }
+            statement.close();
+            connect.close();
+            return mediaFileset;
+        } catch (
+                SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

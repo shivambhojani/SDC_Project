@@ -17,6 +17,15 @@ public class PersonIdentity {
     private List<String> notes = new ArrayList<>();
 
     PersonIdentity addPerson(String name) {
+
+        if(name==null)
+        {
+            return null;
+        }
+        else if (name.trim().length()!=0)
+        {
+            return null;
+        }
         System.out.println(name);
         createConnection conn = new createConnection();
 
@@ -90,40 +99,59 @@ public class PersonIdentity {
                             System.out.println("Date of Birth format is wrong");
                         }
 
-                    } else if (Objects.equals(key, "dod")) {
-                        if (value != null) {
-                            dod = value;
-                            String updateQuery = "update person set dod='" + dod + "' where p_id='" + person.getId() + "';";
+                    }
+                } else if (Objects.equals(key, "dod")) {
+                    if (value != null) {
+                        dod = value;
+                        String updateQuery = "update person set dod='" + dod + "' where p_id='" + person.getId() + "';";
+                        try {
                             statement.executeUpdate(updateQuery);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
                         }
-                    } else if (Objects.equals(key, "dLocation")) {
-                        if (value != null) {
-                            dLocation = value;
-                            String updateQuery = "update person set dLocation='" + dLocation + "' where p_id='" + person.getId() + "';";
+
+                    }
+                } else if (Objects.equals(key, "dLocation")) {
+                    if (value != null) {
+                        dLocation = value;
+                        String updateQuery = "update person set dLocation='" + dLocation + "' where p_id='" + person.getId() + "';";
+                        try {
                             statement.executeUpdate(updateQuery);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
                         }
-                    } else if (Objects.equals(key, "gender")) {
-                        if (value != null) {
-                            gender = value;
-                            String updateQuery = "update person set gender='" + gender + "' where p_id='" + person.getId() + "';";
+                    }
+                } else if (Objects.equals(key, "gender")) {
+                    if (value != null) {
+                        gender = value;
+                        String updateQuery = "update person set gender='" + gender + "' where p_id='" + person.getId() + "';";
+                        try {
                             statement.executeUpdate(updateQuery);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
                         }
-                    } else if (Objects.equals(key, "occupation")) {
-                        if (value != null) {
-                            occupation = value;
-                            String updateQuery = "update person set occupation='" + occupation + "' where p_id='" + person.getId() + "';";
+
+                    }
+                } else if (Objects.equals(key, "occupation")) {
+                    if (value != null) {
+                        occupation = value;
+                        String updateQuery = "update person set occupation='" + occupation + "' where p_id='" + person.getId() + "';";
+                        try {
                             statement.executeUpdate(updateQuery);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
             }
             statement.close();
             connect.close();
+            return true;
         } catch (SQLException e) {
             System.out.println(e);
+            return false;
         }
 
-        return true;
     }
 
 
@@ -162,8 +190,7 @@ public class PersonIdentity {
         }
     }
 
-    Boolean recordNote( PersonIdentity person, String note )
-    {
+    Boolean recordNote(PersonIdentity person, String note) {
         createConnection conn = new createConnection();
 
         ResultSet resultSet = null;
@@ -197,7 +224,6 @@ public class PersonIdentity {
 
         }
     }
-
 
 
     public String getId() {

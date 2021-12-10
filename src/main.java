@@ -1,58 +1,104 @@
 import javax.sound.midi.Soundbank;
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public class main {
     public static void main(String[] args) {
 
-        FileIdentifier fi = new FileIdentifier();
-        fi = fi.addMediaFile("F:\\Shivam");
-
-
-        Genealogy gn = new Genealogy();
-        FileIdentifier f = new FileIdentifier();
-        f = gn.findMediaFile("F://Shivam");
-
-        System.out.println(f.getLocation());
-        System.out.println(f.getMediaId());
-
-
-        System.out.println(fi.getMediaId());
-        System.out.println(fi.getFileName());
-        System.out.println(fi.getLocation());
-
-        Map<String, String> mediaMap = new HashMap<>();
-        mediaMap.put("date", "27/01/1998");
-        mediaMap.put("filename", "Dublin");
-        f.recordMediaAttributes(f,mediaMap);
-
-
-
         /*ADD PERSON--------------------------------------------------*/
-//        PersonIdentity person = new PersonIdentity();
-//        person = person.addPerson("Rachel");
+//        PersonIdentity person1 = new PersonIdentity();
+//        person1 = person1.addPerson("person1");
+//
+//        PersonIdentity person2 = new PersonIdentity();
+//        person2 = person2.addPerson("person2");
+//
+//        PersonIdentity person3 = new PersonIdentity();
+//        person3 = person3.addPerson("person3");
+//
+//        PersonIdentity person4 = new PersonIdentity();
+//        person4 = person4.addPerson("person4");
 
 
+        /*Add media file-----------------------*/
+//        FileIdentifier fi = new FileIdentifier();
+//        fi = fi.addMediaFile("F:/newFile");
+
+        /*find file by filelocation----------------------------------*/
+//        Genealogy gn = new Genealogy();
+//        FileIdentifier f = new FileIdentifier();
+//        f = gn.findMediaFile("F:/newFile");
+
+        /*Add media tags-------------------------*/
+//        FileIdentifier fid = new FileIdentifier();
+//        fid.tagMedia(f,"Test tag");
+
+
+        /*Add media attributes-------------*/
+//        Map<String, String> mediaMap = new HashMap<>();
+//        mediaMap.put("date", "1990-04-15");
+//        mediaMap.put("filename", "Test File name 123456");
+//        f.recordMediaAttributes(f,mediaMap);
+
+        /*Add people in media*/
+//        List<PersonIdentity> people = new ArrayList<>();
+//        Genealogy g = new Genealogy();
+//        PersonIdentity p1 = g.findPerson("person1");
+//        PersonIdentity p2 = g.findPerson("person2");
+//        PersonIdentity p3 = g.findPerson("person3");
+//        PersonIdentity p4 = g.findPerson("person4");
+//        PersonIdentity p5 = g.findPerson("Chandler");
+//        people.add(p1);
+//        people.add(p2);
+//        people.add(p3);
+//        people.add(p4);
+//        people.add(p5);
+//        FileIdentifier FileIdentify = new FileIdentifier();
+//        FileIdentify.peopleInMedia(f, people);
+
+
+        /*findmedia by tag*/
+
+        Genealogy ggn = new Genealogy();
+
+        Set<FileIdentifier> s = new HashSet<>();
+        s = ggn.findMediaByTag("Tag2", null, null);
+
+        for (FileIdentifier file : s) {
+            System.out.println(file.getFileName());
+            System.out.println(file.getMediaId());
+            System.out.println(file.getLocation());
+        }
+
+
+        System.out.println("-----------");
 
         /*FIND PERSON AND RECORD ATTRIBUTES---------------------------*/
 //        Genealogy g = new Genealogy();
-//        PersonIdentity person2 = g.findPerson("Ross");
+//        PersonIdentity p1 = g.findPerson("person1");
+//        PersonIdentity p2 = g.findPerson("person2");
+//        PersonIdentity p3 = g.findPerson("person3");
+//        PersonIdentity p4 = g.findPerson("person4");
+//
+//        System.out.println("New Id: " + p1.getId());
+//        System.out.println("New Id: " + p2.getId());
+//        System.out.println("New Id: " + p3.getId());
+//        System.out.println("New Id: " + p4.getId());
 //
 //        PersonIdentity record = new PersonIdentity();
-//        System.out.println("New Id: " + person2.getId());
 //        Map<String, String> m = new HashMap<>();
-//        m.put("dob", "1998-03-20");
-//        m.put("bLocation", "Dublin");
-//        m.put("gender", null);
-//        m.put("occupation", "Teacher");
-//        record.recordAttributes(person2, m);
-
-
-        //person = gparent.findPerson("Ross");
+//        m.put("dob", "2000-03-20");
+//        m.put("dod", "2021-03-20");
+//        m.put("bLocation", "London");
+//        m.put("dLocation", "Canada");
+//        m.put("gender", "female");
+//        m.put("occupation", "Sales Manager");
+//
+//        System.out.println(record.recordAttributes(p1, m));
+//        System.out.println(record.recordAttributes(p2, m));
+//        System.out.println(record.recordAttributes(p3, m));
+//        System.out.println(record.recordAttributes(p4, m));
 
 
         /*RECORD CHILD------------------------------------*/
