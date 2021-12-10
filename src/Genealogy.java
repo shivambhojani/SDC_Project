@@ -144,41 +144,77 @@ public class Genealogy {
             /*extracting personId and putting it in seperate array*/
             String s = "";
             for (PersonIdentity p : people) {
-               s = s+"'"+p.getId()+"',";
+                s = s + "'" + p.getId() + "',";
             }
-            s=s.substring(0,s.length()-1);
+            s = s.substring(0, s.length() - 1);
 
-            String findbyPeople = "select mediaId from person_in_media where person in ("+s+") group by mediaId;";
+            String findMediaIdbyPeople = "select mediaId from person_in_media where person in (" + s + ") group by mediaId;";
 
             /*getting all mediaIds*/
-            List<String> peopleInMediaList = new ArrayList<>();
-            resultSet = statement.executeQuery(findbyPeople);
+            List<String> finalMediaIds = new ArrayList<>();
+            resultSet = statement.executeQuery(findMediaIdbyPeople);
 
             while (resultSet.next()) {
-                System.out.println("MediaId = "+resultSet.getString("mediaId") );
-                peopleInMediaList.add(resultSet.getString("mediaId"));
+                //System.out.println("MediaId = " + resultSet.getString("mediaId"));
+                finalMediaIds.add(resultSet.getString("mediaId"));
             }
 
-            List<FileIdentifier> mediaFiles =  new ArrayList<>();
-            for (int i=0; i< peopleInMediaList.size(); i++)
+            /*Validating Start date and end Date*/
+            Boolean datesAreFine = true;
+            if (startDate == null || endDate == null) {
+                datesAreFine = false;
+            } else if (startDate.trim().length() == 0 || endDate.trim().length() == 0) {
+                datesAreFine = false;
+            }
+
+            List<FileIdentifier> mediaFilesObject = new ArrayList<>();
+            String findMediaDetails = "";
+
+            String ss = "";
+            for (String finalId : finalMediaIds) {
+                ss = ss + "'" + finalId + "',";
+            }
+            ss = ss.substring(0, ss.length() - 1);
+
+            if (datesAreFine) {
+                findMediaDetails = "select * from media_archieve where mediaId in (" + ss + ") " +
+                        "and date between '" + startDate + "' and '" + endDate + "' order by filename asc;";
+                System.out.println(findMediaDetails);
+
+            } else {
+                findMediaDetails = "select * from media_archieve where mediaId in (" + ss + ") order by filename asc;";
+                System.out.println(findMediaDetails);
+            }
+
+            /*First adding the data which is found from above queries*/
+            resultSet = statement.executeQuery(findMediaDetails);
+            while (resultSet.next()) {
+                FileIdentifier f = new FileIdentifier();
+                f.setMediaId(resultSet.getString("mediaId"));
+                f.setLocation(resultSet.getString("location"));
+                f.setFileName(resultSet.getString("filename"));
+                f.setDate(resultSet.getString("date"));
+                mediaFilesObject.add(f);
+            }
+
+            /*Suppose if both the dates are valid and datesAreFine = true. So now it will add the filenames with null in the list as well*/
+
+            if (datesAreFine)
             {
-                resultSet = null;
-                resultSet = statement.executeQuery("select * from media_archieve where mediaId='"+peopleInMediaList.get(i)+"';");
+                resultSet = statement.executeQuery("select * from media_archieve where date IS NULL order by filename asc;");
                 while (resultSet.next()) {
                     FileIdentifier f = new FileIdentifier();
                     f.setMediaId(resultSet.getString("mediaId"));
                     f.setLocation(resultSet.getString("location"));
                     f.setFileName(resultSet.getString("filename"));
                     f.setDate(resultSet.getString("date"));
-                    mediaFiles.add(f);
+                    mediaFilesObject.add(f);
                 }
-
             }
-
 
             statement.close();
             connect.close();
-            return mediaFiles;
+            return mediaFilesObject;
 
         } catch (SQLException e) {
             e.printStackTrace();

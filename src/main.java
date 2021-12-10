@@ -14,11 +14,11 @@ public class main {
         Set<PersonIdentity> s = new HashSet<>();
         s.add(p1);
         s.add(p2);
-       List<FileIdentifier> file=  gene.findIndividualsMedia(s,null,null);
+       List<FileIdentifier> file=  gene.findIndividualsMedia(s,"1950-01-01","1990-01-01");
 
         for(FileIdentifier ff : file)
         {
-            System.out.println(ff.getMediaId() + ff.getFileName());
+            System.out.println(ff.getMediaId() +" " + ff.getFileName());
         }
 
         /*ADD PERSON--------------------------------------------------*/
