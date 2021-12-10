@@ -95,7 +95,8 @@ public class Genealogy {
             if (startDate == null || endDate == null) {
                 findmediabytags = "select * from media_archieve where mediaId in (select mediaId from media_tags where tag = '" + tag + "');";
             } else if (startDate.trim().length() != 0 || endDate.trim().length() != 0) {
-                findmediabytags = "select * from media_archieve where date between " + startDate + " and " + endDate + ";";
+                findmediabytags = "select * from media_archieve where date between '" + startDate + "' and '" + endDate + "' " +
+                        "and mediaId in (select mediaId from media_tags where tag='" + tag + "');";
             }
 
             resultSet = statement.executeQuery(findmediabytags);
@@ -122,6 +123,46 @@ public class Genealogy {
             return mediaFileset;
         } catch (
                 SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    List<String> notesAndReferences(PersonIdentity person) {
+        Connection connect = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        PersonIdentity p = new PersonIdentity();
+        createConnection conn = new createConnection();
+        try {
+            connect = conn.startConnection();
+            statement = connect.createStatement();
+            statement.executeQuery("use " + conn.databaseName);
+            resultSet = statement.executeQuery("select * from person where p_id='" + person.getId() + "';");
+
+            if (resultSet.next() == false) {
+                return null;
+            }
+
+            List<String> notesandRef = new ArrayList<>();
+
+            /*Fetch Notes*/
+            String fetchNotes = "SELECT * FROM person_notes where p_id = '" + person.getId() + "' order by noteid asc";
+            resultSet = statement.executeQuery(fetchNotes);
+            while (resultSet.next()) {
+                notesandRef.add(resultSet.getString("notes"));
+            }
+
+            /*Fetch References*/
+            String fetchRef = "select * from person_references where p_id = '" + person.getId() + "' order by referenceid asc;";
+            resultSet = null;
+            resultSet = statement.executeQuery(fetchRef);
+            while (resultSet.next()) {
+                notesandRef.add(resultSet.getString("references"));
+            }
+            return notesandRef;
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }

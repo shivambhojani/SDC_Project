@@ -36,7 +36,6 @@ public class PersonIdentity {
             statement.executeQuery("use " + conn.databaseName);
 
             String insertQuery = "insert into person value (null, '" + name + "', null, null, null, null, null, null);";
-
             statement.executeUpdate(insertQuery);
 
             String selectQuery = "select * from person order by p_id desc limit 1";
