@@ -1,9 +1,6 @@
 import javax.swing.*;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Genealogy {
 
@@ -71,7 +68,6 @@ public class Genealogy {
 
         return f;
     }
-
 
     Set<FileIdentifier> findMediaByTag(String tag, String startDate, String endDate) {
         Connection connect = null;
@@ -238,7 +234,6 @@ public class Genealogy {
 
     }
 
-
     List<String> notesAndReferences(PersonIdentity person) {
         Connection connect = null;
         Statement statement = null;
@@ -277,7 +272,6 @@ public class Genealogy {
             return null;
         }
     }
-
 
     List<FileIdentifier> findBiologicalFamilyMedia(PersonIdentity person) {
         Connection connect = null;
@@ -318,7 +312,6 @@ public class Genealogy {
         }
 
     }
-
 
     Set<PersonIdentity> descendents(PersonIdentity person, Integer generations) {
         Connection connect = null;
@@ -401,7 +394,7 @@ public class Genealogy {
         }
     }
 
-    Set<PersonIdentity> ancestores( PersonIdentity person, Integer generations ) {
+    Set<PersonIdentity> ancestores(PersonIdentity person, Integer generations) {
 
         Connection connect = null;
         Statement statement = null;
@@ -427,11 +420,11 @@ public class Genealogy {
             //2. https://www.sqlservertutorial.net/sql-server-basics/sql-server-recursive-cte/
 
             String findancestores = "with RECURSIVE ancestores (childid, ancestor, lvl) as \n" +
-                    "\t\t( select childid, parentid, 1 from parentchild_relation where childid='"+person.getId()+"'\n" +
+                    "\t\t( select childid, parentid, 1 from parentchild_relation where childid='" + person.getId() + "'\n" +
                     "\t\tunion all\n" +
                     "\t\tselect d.childid, s.parentid, d.lvl + 1\n" +
                     "\t\tfrom ancestores d join parentchild_relation s on d.ancestor = s.childid) \n" +
-                    "\tselect * from ancestores where lvl < '"+generations + 1+"' order by childid, lvl, ancestor;";
+                    "\tselect * from ancestores where lvl < '" + generations + 1 + "' order by childid, lvl, ancestor;";
 
             resultSet = statement.executeQuery(findancestores);
 
@@ -480,5 +473,135 @@ public class Genealogy {
             e.printStackTrace();
             return null;
         }
+    }
+
+    BiologicalRelation findRelation(PersonIdentity person1, PersonIdentity person2) {
+        Connection connect = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        PersonIdentity p = new PersonIdentity();
+        createConnection conn = new createConnection();
+        try {
+            connect = conn.startConnection();
+            statement = connect.createStatement();
+            statement.executeQuery("use " + conn.databaseName);
+
+            /*Checking if persons are valid or not*/
+            String selectQuery1 = "select * from person where p_id = '" + person1.getId() + "';";
+            resultSet = statement.executeQuery(selectQuery1);
+            if (resultSet.next() == false) {
+                statement.close();
+            }
+
+            resultSet = null;
+            selectQuery1 = "select * from person where p_id = '" + person2.getId() + "';";
+            resultSet = statement.executeQuery(selectQuery1);
+            if (resultSet.next() == false) {
+                statement.close();
+            }
+
+            String findAllAncestors1 = "with RECURSIVE ancestores (childid, ancestor, lvl) as \n" +
+                    "( select childid, parentid, 1 from parentchild_relation where childid='" + person1.getId() + "'\n" +
+                    "union all\n" +
+                    "select d.childid, s.parentid, d.lvl + 1\n" +
+                    "from ancestores d join parentchild_relation s on d.ancestor = s.childid) \n" +
+                    "select * from ancestores order by lvl asc;";
+
+            String findAllAncestors2 = "with RECURSIVE ancestores (childid, ancestor, lvl) as \n" +
+                    "( select childid, parentid, 1 from parentchild_relation where childid='" + person2.getId() + "'\n" +
+                    "union all\n" +
+                    "select d.childid, s.parentid, d.lvl + 1\n" +
+                    "from ancestores d join parentchild_relation s on d.ancestor = s.childid) \n" +
+                    "select * from ancestores order by lvl asc;";
+
+
+            resultSet = statement.executeQuery(findAllAncestors1);
+            List<String> person1AncestorsId = new ArrayList<>();
+            Map<String, String> person1AncestorsLevel = new HashMap<>();
+
+            /*adding self as ancestor at level 0*/
+            person1AncestorsId.add(person1.getId());
+            person1AncestorsLevel.put(person1.getId(), "0");
+
+            while (resultSet.next()) {
+                person1AncestorsId.add(resultSet.getString("ancestor"));
+                person1AncestorsLevel.put(resultSet.getString("ancestor"), resultSet.getString("lvl"));
+            }
+
+            System.out.println(person1AncestorsId);
+
+            resultSet = null;
+            resultSet = statement.executeQuery(findAllAncestors2);
+            List<String> person2AncestorsId = new ArrayList<>();
+            Map<String, String> person2AncestorsLevel = new HashMap<>();
+
+            /*adding self as ancestor at level 0*/
+            person2AncestorsId.add(person2.getId());
+            person2AncestorsLevel.put(person2.getId(), "0");
+
+            while (resultSet.next()) {
+                person2AncestorsId.add(resultSet.getString("ancestor"));
+                person2AncestorsLevel.put(resultSet.getString("ancestor"), resultSet.getString("lvl"));
+            }
+
+            System.out.println(person2AncestorsId);
+
+            List<String> commonAncestorsId = new ArrayList<>();
+//            for (String s : person1AncestorsId) {
+//                commonAncestorsId.add(s);
+//            }
+            boolean commonAncestors = commonAncestorsId.retainAll(person2AncestorsId);
+
+            if (!person1AncestorsId.isEmpty() || !person2AncestorsId.isEmpty())
+            {
+                for (String s : person1AncestorsId){
+                    if(person2AncestorsId.contains(s))
+                    {
+                        commonAncestorsId.add(s);
+                    }
+                }
+            }
+
+            String referencesAncestor = "";
+            int person1Level = 0;
+            int person2Level = 0;
+
+            if (!commonAncestorsId.isEmpty()) {
+
+                referencesAncestor = commonAncestorsId.get(0);
+                person1Level = Integer.parseInt(person1AncestorsLevel.get(referencesAncestor));
+                person2Level = Integer.parseInt(person2AncestorsLevel.get(referencesAncestor));
+
+                System.out.println("Counsinship = " + (Math.min(person1Level,person2Level)- 1));
+            }
+            else if (commonAncestorsId.isEmpty())
+            {
+                /*if there are no ancestors of person1 but person2 has*/
+                if (person1AncestorsId.isEmpty() && !person2AncestorsId.isEmpty())
+                {
+                    /*checking if person 1 is one of the ancestor of person 2*/
+                    if(person2AncestorsId.contains(person1.getId()))
+                    {
+                        System.out.println("Counsinship = " + -1);
+                    }
+                }
+                else if (!person1AncestorsId.isEmpty() && person2AncestorsId.isEmpty())
+                {
+                    /*checking if person 2 is one of the ancestor of person 1*/
+                    if(person2AncestorsId.contains(person1.getId()))
+                    {
+                        System.out.println("Counsinship = " + -1);
+                    }
+                }
+            }
+
+
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
+
+        return new BiologicalRelation();
     }
 }

@@ -5,6 +5,25 @@ import java.sql.Statement;
 import java.util.Objects;
 
 public class BiologicalRelation {
+    private int Cousinship=0;
+    private int Removal=0;
+
+    public int getCousinship() {
+        return Cousinship;
+    }
+
+    public void setCousinship(int cousinship) {
+        Cousinship = cousinship;
+    }
+
+    public int getRemoval() {
+        return Removal;
+    }
+
+    public void setRemoval(int removal) {
+        Removal = removal;
+    }
+
 
     Boolean recordChild(PersonIdentity parent, PersonIdentity child) {
         // if both person identity are same then it will return false, as a person cannot be a child of himself/herself.

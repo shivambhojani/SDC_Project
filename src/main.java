@@ -3,31 +3,39 @@ import java.util.*;
 public class main {
     public static void main(String[] args) {
 
+
         /*findBiologicalFamilyMedia------------*/
+//        Genealogy g = new Genealogy();
+//        PersonIdentity p1 = g.findPerson("A");
+//
+//        List<FileIdentifier> fileObjects = g.findBiologicalFamilyMedia(p1);
+//        if (fileObjects != null) {
+//            System.out.println("size = " + fileObjects.size());
+//        }
+//        Set<PersonIdentity> sp = new HashSet<>();
+//        sp = g.descendents(p1, 3);
+//
+//        if (sp != null) {
+//            for (PersonIdentity s : sp) {
+//                System.out.println(s.getId() + "  " + s.getPersonName());
+//            }
+//
+//        }
+//        sp = g.ancestores(p1, 3);
+//
+//        if (sp!=null) {
+//            for (PersonIdentity s : sp) {
+//                System.out.println(s.getId() + "  " + s.getPersonName());
+//            }
+//        }
+
+
+        /*find relations between two person*/
         Genealogy g = new Genealogy();
-        PersonIdentity p1 = g.findPerson("Shivam Bhojani");
+        PersonIdentity p1 = g.findPerson("J");
+        PersonIdentity p2 = g.findPerson("F");
 
-        List<FileIdentifier> fileObjects = g.findBiologicalFamilyMedia(p1);
-        if (fileObjects != null) {
-            System.out.println("size = " + fileObjects.size());
-        }
-        Set<PersonIdentity> sp = new HashSet<>();
-        sp = g.descendents(p1, 3);
-
-        if (sp != null) {
-            for (PersonIdentity s : sp) {
-                System.out.println(s.getId() + "  " + s.getPersonName());
-            }
-
-        }
-        sp = g.ancestores(p1, 3);
-
-        if (sp!=null) {
-            for (PersonIdentity s : sp) {
-                System.out.println(s.getId() + "  " + s.getPersonName());
-            }
-        }
-
+        g.findRelation(p1,p2);
 
         /*find individual in media----------------*/
 
@@ -45,9 +53,10 @@ public class main {
 //            System.out.println(ff.getMediaId() +" " + ff.getFileName());
 //        }
         /*ADD PERSON--------------------------------------------------*/
-//        PersonIdentity person1 = new PersonIdentity();
-//        person1 = person1.addPerson("person1");
-//
+        PersonIdentity person1 = new PersonIdentity();
+       // person1.addPerson("X");
+
+
 //        PersonIdentity person2 = new PersonIdentity();
 //        person2 = person2.addPerson("person2");
 //

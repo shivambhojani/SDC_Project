@@ -19,7 +19,7 @@ public class PersonIdentity {
         {
             return null;
         }
-        else if (name.trim().length()!=0)
+        else if (name.trim().length()==0)
         {
             return null;
         }
