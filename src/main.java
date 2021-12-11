@@ -1,8 +1,4 @@
-import javax.sound.midi.Soundbank;
-import java.sql.*;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.Date;
 
 public class main {
     public static void main(String[] args) {
@@ -12,10 +8,15 @@ public class main {
         PersonIdentity p1 = g.findPerson("Shivam");
 
         List<FileIdentifier> fileObjects = g.findBiologicalFamilyMedia(p1);
-       System.out.println("size = " + fileObjects.size());
+        if (fileObjects != null) {
+            System.out.println("size = " + fileObjects.size());
+        }
 
-        g.descendents(p1,3);
+        Set<PersonIdentity> sp = g.descendents(p1, 3);
 
+        for (PersonIdentity s : sp) {
+            System.out.println(s.getId() + "  " + s.getPersonName());
+        }
 
 
 

@@ -387,7 +387,6 @@ public class Genealogy {
                 descedantsSet.add(pi);
             }
 
-
             statement.close();
             connect.close();
             return descedantsSet;
