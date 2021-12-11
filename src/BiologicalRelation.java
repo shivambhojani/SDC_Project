@@ -5,22 +5,22 @@ import java.sql.Statement;
 import java.util.Objects;
 
 public class BiologicalRelation {
-    private int Cousinship=0;
-    private int Removal=0;
+    private String  Cousinship="";
+    private String Removal="";
 
-    public int getCousinship() {
+    public String getCousinship() {
         return Cousinship;
     }
 
-    public void setCousinship(int cousinship) {
+    public void setCousinship(String cousinship) {
         Cousinship = cousinship;
     }
 
-    public int getRemoval() {
+    public String getRemoval() {
         return Removal;
     }
 
-    public void setRemoval(int removal) {
+    public void setRemoval(String removal) {
         Removal = removal;
     }
 

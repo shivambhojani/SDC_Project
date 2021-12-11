@@ -547,18 +547,10 @@ public class Genealogy {
             System.out.println(person2AncestorsId);
 
             List<String> commonAncestorsId = new ArrayList<>();
-//            for (String s : person1AncestorsId) {
-//                commonAncestorsId.add(s);
-//            }
-            boolean commonAncestors = commonAncestorsId.retainAll(person2AncestorsId);
 
-            if (!person1AncestorsId.isEmpty() || !person2AncestorsId.isEmpty())
-            {
-                for (String s : person1AncestorsId){
-                    if(person2AncestorsId.contains(s))
-                    {
-                        commonAncestorsId.add(s);
-                    }
+            for (String s : person1AncestorsId) {
+                if (person2AncestorsId.contains(s)) {
+                    commonAncestorsId.add(s);
                 }
             }
 
@@ -566,35 +558,24 @@ public class Genealogy {
             int person1Level = 0;
             int person2Level = 0;
 
+            /*Calculating cousinShip and removal based on the ancestors of both person*/
+            BiologicalRelation br = new BiologicalRelation();
+
             if (!commonAncestorsId.isEmpty()) {
 
                 referencesAncestor = commonAncestorsId.get(0);
                 person1Level = Integer.parseInt(person1AncestorsLevel.get(referencesAncestor));
                 person2Level = Integer.parseInt(person2AncestorsLevel.get(referencesAncestor));
 
-                System.out.println("Counsinship = " + (Math.min(person1Level,person2Level)- 1));
-            }
-            else if (commonAncestorsId.isEmpty())
-            {
-                /*if there are no ancestors of person1 but person2 has*/
-                if (person1AncestorsId.isEmpty() && !person2AncestorsId.isEmpty())
-                {
-                    /*checking if person 1 is one of the ancestor of person 2*/
-                    if(person2AncestorsId.contains(person1.getId()))
-                    {
-                        System.out.println("Counsinship = " + -1);
-                    }
-                }
-                else if (!person1AncestorsId.isEmpty() && person2AncestorsId.isEmpty())
-                {
-                    /*checking if person 2 is one of the ancestor of person 1*/
-                    if(person2AncestorsId.contains(person1.getId()))
-                    {
-                        System.out.println("Counsinship = " + -1);
-                    }
-                }
-            }
+                br.setCousinship(String.valueOf(Math.min(person1Level, person2Level) - 1));
+                br.setRemoval(String.valueOf(Math.abs(person1Level - person2Level)));
 
+                System.out.println("Counsinship = " + (Math.min(person1Level, person2Level) - 1));
+                System.out.println("Removal = " + (Math.abs(person1Level - person2Level)));
+
+            } else if (commonAncestorsId.isEmpty()) {
+
+            }
 
 
         } catch (SQLException e) {

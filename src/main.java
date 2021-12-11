@@ -32,8 +32,8 @@ public class main {
 
         /*find relations between two person*/
         Genealogy g = new Genealogy();
-        PersonIdentity p1 = g.findPerson("J");
-        PersonIdentity p2 = g.findPerson("F");
+        PersonIdentity p1 = g.findPerson("D");
+        PersonIdentity p2 = g.findPerson("I");
 
         g.findRelation(p1,p2);
 
