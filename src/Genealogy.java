@@ -128,8 +128,7 @@ public class Genealogy {
         }
     }
 
-    List<FileIdentifier> findIndividualsMedia(Set<PersonIdentity> people, String startDate, String
-            endDate) {
+    List<FileIdentifier> findIndividualsMedia(Set<PersonIdentity> people, String startDate, String endDate) {
 
         Connection connect = null;
         Statement statement = null;
@@ -148,16 +147,13 @@ public class Genealogy {
             }
 
             /*Validating if there are not media files for the found person/s*/
-            if(s.length()>1) {
+            if (s.length() > 1) {
                 s = s.substring(0, s.length() - 1);
-            }
-            else if (s.length()==0)
-            {
+            } else if (s.length() == 0) {
                 statement.close();
                 connect.close();
                 return null;
             }
-
 
 
             String findMediaIdbyPeople = "select mediaId from person_in_media where person in (" + s + ") group by mediaId;";
@@ -187,7 +183,14 @@ public class Genealogy {
             for (String finalId : finalMediaIds) {
                 ss = ss + "'" + finalId + "',";
             }
-            ss = ss.substring(0, ss.length() - 1);
+            if (ss.length() > 1) {
+                ss = ss.substring(0, ss.length() - 1);
+            } else if (ss.length() == 0) {
+                statement.close();
+                connect.close();
+                return null;
+            }
+
 
             if (datesAreFine) {
                 findMediaDetails = "select * from media_archieve where mediaId in (" + ss + ") " +
@@ -291,9 +294,6 @@ public class Genealogy {
                 System.out.println("Person not found in databse");
                 return null;
             }
-
-            /*finding child of the given person*/
-
             String findChilderen = "select * from parentchild_relation where parentid = '" + person.getId() + "';";
 
             resultSet = statement.executeQuery(findChilderen);
@@ -301,7 +301,6 @@ public class Genealogy {
             Set<PersonIdentity> personObject = new HashSet<>();
 
             while (resultSet.next()) {
-
                 PersonIdentity pr = new PersonIdentity();
                 //System.out.println("Child = " +resultSet.getString("childid") );
                 pr.setId(resultSet.getString("childid"));
@@ -313,11 +312,88 @@ public class Genealogy {
             connect.close();
             return fileList;
 
-
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
 
+    }
+
+
+    Set<PersonIdentity> descendents(PersonIdentity person, Integer generations) {
+        Connection connect = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        FileIdentifier f = new FileIdentifier();
+        createConnection conn = new createConnection();
+        try {
+            connect = conn.startConnection();
+            statement = connect.createStatement();
+            statement.executeQuery("use " + conn.databaseName);
+
+            /*validating that person mentioned in argument exists in database or not*/
+            resultSet = statement.executeQuery("select * from person where p_id='" + person.getId() + "';");
+            if (resultSet.next() == false) {
+                System.out.println("Given person does not exists in Database");
+                statement.close();
+                connect.close();
+                return null;
+            }
+
+            String finddescendents = "with RECURSIVE descendants (parentid, descendant, lvl) as \n" +
+                    "( select parentid, childid, 1 from parentchild_relation where parentid='" + person.getId() + "'\n" +
+                    "union all\n" +
+                    "select d.parentid, s.childid, d.lvl + 1\n" +
+                    "from descendants d join parentchild_relation  s on d.descendant = s.parentid) \n" +
+                    "select * from descendants where lvl< '" + generations + 1 + "' order by parentid, lvl, descendant;";
+
+            resultSet = statement.executeQuery(finddescendents);
+
+            /*Putting all person id in one arraylist*/
+            List<String> finalDecendantsId = new ArrayList<>();
+
+            while (resultSet.next()) {
+                finalDecendantsId.add(resultSet.getString("descendant"));
+            }
+
+            String s = "";
+            for (String p : finalDecendantsId) {
+                s = s + "'" + p + "',";
+            }
+            if (s.length() > 1) {
+                s = s.substring(0, s.length() - 1);
+            } else {
+                statement.close();
+                connect.close();
+                return null;
+            }
+
+            String fetchDecedantsData = "select * from person where p_id in (" + s + ");";
+            System.out.println(fetchDecedantsData);
+
+            resultSet = statement.executeQuery(fetchDecedantsData);
+
+            Set<PersonIdentity> descedantsSet = new HashSet<>();
+
+            while (resultSet.next()) {
+                PersonIdentity pi = new PersonIdentity();
+                pi.setId(resultSet.getString("p_id"));
+                pi.setPersonName(resultSet.getString("name"));
+                pi.setDob(resultSet.getString("dob"));
+                pi.setbLocation(resultSet.getString("bLocation"));
+                pi.setDod(resultSet.getString("dod"));
+                pi.setdLocation(resultSet.getString("dLocation"));
+                pi.setOccupation(resultSet.getString("occupation"));
+                descedantsSet.add(pi);
+            }
+
+
+            statement.close();
+            connect.close();
+            return descedantsSet;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

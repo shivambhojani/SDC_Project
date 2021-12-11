@@ -9,10 +9,12 @@ public class main {
 
         /*findBiologicalFamilyMedia------------*/
         Genealogy g = new Genealogy();
-        PersonIdentity p1 = g.findPerson("person3");
+        PersonIdentity p1 = g.findPerson("Shivam");
 
         List<FileIdentifier> fileObjects = g.findBiologicalFamilyMedia(p1);
-        System.out.println("size = " + fileObjects.size());
+       System.out.println("size = " + fileObjects.size());
+
+        g.descendents(p1,3);
 
 
 
