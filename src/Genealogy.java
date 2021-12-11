@@ -146,9 +146,22 @@ public class Genealogy {
             for (PersonIdentity p : people) {
                 s = s + "'" + p.getId() + "',";
             }
-            s = s.substring(0, s.length() - 1);
+
+            /*Validating if there are not media files for the found person/s*/
+            if(s.length()>1) {
+                s = s.substring(0, s.length() - 1);
+            }
+            else if (s.length()==0)
+            {
+                statement.close();
+                connect.close();
+                return null;
+            }
+
+
 
             String findMediaIdbyPeople = "select mediaId from person_in_media where person in (" + s + ") group by mediaId;";
+            //System.out.println(findMediaIdbyPeople);
 
             /*getting all mediaIds*/
             List<String> finalMediaIds = new ArrayList<>();
@@ -199,8 +212,7 @@ public class Genealogy {
 
             /*Suppose if both the dates are valid and datesAreFine = true. So now it will add the filenames with null in the list as well*/
 
-            if (datesAreFine)
-            {
+            if (datesAreFine) {
                 resultSet = statement.executeQuery("select * from media_archieve where date IS NULL order by filename asc;");
                 while (resultSet.next()) {
                     FileIdentifier f = new FileIdentifier();
@@ -264,4 +276,48 @@ public class Genealogy {
     }
 
 
+    List<FileIdentifier> findBiologicalFamilyMedia(PersonIdentity person) {
+        Connection connect = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        FileIdentifier f = new FileIdentifier();
+        createConnection conn = new createConnection();
+        try {
+            connect = conn.startConnection();
+            statement = connect.createStatement();
+            statement.executeQuery("use " + conn.databaseName);
+            resultSet = statement.executeQuery("select * from person where p_id = '" + person.getId() + "';");
+            if (resultSet.next() == false) {
+                System.out.println("Person not found in databse");
+                return null;
+            }
+
+            /*finding child of the given person*/
+
+            String findChilderen = "select * from parentchild_relation where parentid = '" + person.getId() + "';";
+
+            resultSet = statement.executeQuery(findChilderen);
+
+            Set<PersonIdentity> personObject = new HashSet<>();
+
+            while (resultSet.next()) {
+
+                PersonIdentity pr = new PersonIdentity();
+                //System.out.println("Child = " +resultSet.getString("childid") );
+                pr.setId(resultSet.getString("childid"));
+                personObject.add(pr);
+            }
+            List<FileIdentifier> fileList = findIndividualsMedia(personObject, null, null);
+
+            statement.close();
+            connect.close();
+            return fileList;
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
 }

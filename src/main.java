@@ -7,20 +7,32 @@ import java.util.Date;
 public class main {
     public static void main(String[] args) {
 
-        Genealogy gene = new Genealogy();
-        PersonIdentity p1 = gene.findPerson("Chandler");
-        PersonIdentity p2 = gene.findPerson("person1");
+        /*findBiologicalFamilyMedia------------*/
+        Genealogy g = new Genealogy();
+        PersonIdentity p1 = g.findPerson("person3");
 
-        Set<PersonIdentity> s = new HashSet<>();
-        s.add(p1);
-        s.add(p2);
-       List<FileIdentifier> file=  gene.findIndividualsMedia(s,"1950-01-01","1990-01-01");
+        List<FileIdentifier> fileObjects = g.findBiologicalFamilyMedia(p1);
+        System.out.println("size = " + fileObjects.size());
 
-        for(FileIdentifier ff : file)
-        {
-            System.out.println(ff.getMediaId() +" " + ff.getFileName());
-        }
 
+
+
+
+        /*find individual in media----------------*/
+
+//        Genealogy gene = new Genealogy();
+//        PersonIdentity p1 = gene.findPerson("Chandler");
+//        PersonIdentity p2 = gene.findPerson("person1");
+//
+//        Set<PersonIdentity> s = new HashSet<>();
+//        s.add(p1);
+//        s.add(p2);
+//       List<FileIdentifier> file=  gene.findIndividualsMedia(s,"1950-01-01","1990-01-01");
+//
+//        for(FileIdentifier ff : file)
+//        {
+//            System.out.println(ff.getMediaId() +" " + ff.getFileName());
+//        }
         /*ADD PERSON--------------------------------------------------*/
 //        PersonIdentity person1 = new PersonIdentity();
 //        person1 = person1.addPerson("person1");
@@ -100,7 +112,7 @@ public class main {
 //        }
 
         /*FIND PERSON AND RECORD ATTRIBUTES---------------------------*/
-        Genealogy g = new Genealogy();
+//        Genealogy g = new Genealogy();
 //        PersonIdentity p1 = g.findPerson("Chandler");
 //        PersonIdentity p2 = g.findPerson("person1");
 //        PersonIdentity p3 = g.findPerson("person3");
