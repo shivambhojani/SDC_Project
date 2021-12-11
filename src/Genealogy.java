@@ -570,19 +570,21 @@ public class Genealogy {
                 br.setCousinship(String.valueOf(Math.min(person1Level, person2Level) - 1));
                 br.setRemoval(String.valueOf(Math.abs(person1Level - person2Level)));
 
-                System.out.println("Counsinship = " + (Math.min(person1Level, person2Level) - 1));
-                System.out.println("Removal = " + (Math.abs(person1Level - person2Level)));
+                //System.out.println("Counsinship = " + (Math.min(person1Level, person2Level) - 1));
+                //System.out.println("Removal = " + (Math.abs(person1Level - person2Level)));
 
             } else if (commonAncestorsId.isEmpty()) {
 
+                br.setCousinship("None");
+                br.setRemoval("None");
             }
 
 
+            return br;
+
         } catch (SQLException e) {
-
             e.printStackTrace();
+            return null;
         }
-
-        return new BiologicalRelation();
     }
 }

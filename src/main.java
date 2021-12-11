@@ -32,10 +32,14 @@ public class main {
 
         /*find relations between two person*/
         Genealogy g = new Genealogy();
-        PersonIdentity p1 = g.findPerson("D");
-        PersonIdentity p2 = g.findPerson("I");
+        PersonIdentity p1 = g.findPerson("E");
+        PersonIdentity p2 = g.findPerson("J");
 
-        g.findRelation(p1,p2);
+        BiologicalRelation b = g.findRelation(p1,p2);
+
+        System.out.println("Removal: "+b.getRemoval());
+        System.out.println("CousinShip:" + b.getCousinship());
+
 
         /*find individual in media----------------*/
 
