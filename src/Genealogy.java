@@ -340,6 +340,11 @@ public class Genealogy {
                 return null;
             }
 
+            /*References:*/
+            //1. https://dba.stackexchange.com/questions/94932/getting-all-descendants-of-a-parent
+            //2. https://www.sqlservertutorial.net/sql-server-basics/sql-server-recursive-cte/
+
+
             String finddescendents = "with RECURSIVE descendants (parentid, descendant, lvl) as \n" +
                     "( select parentid, childid, 1 from parentchild_relation where parentid='" + person.getId() + "'\n" +
                     "union all\n" +
@@ -390,6 +395,87 @@ public class Genealogy {
             statement.close();
             connect.close();
             return descedantsSet;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    Set<PersonIdentity> ancestores( PersonIdentity person, Integer generations ) {
+
+        Connection connect = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        FileIdentifier f = new FileIdentifier();
+        createConnection conn = new createConnection();
+        try {
+            connect = conn.startConnection();
+            statement = connect.createStatement();
+            statement.executeQuery("use " + conn.databaseName);
+
+            /*validating that person mentioned in argument exists in database or not*/
+            resultSet = statement.executeQuery("select * from person where p_id='" + person.getId() + "';");
+            if (resultSet.next() == false) {
+                System.out.println("Given person does not exists in Database");
+                statement.close();
+                connect.close();
+                return null;
+            }
+
+            /*References:*/
+            //1. https://dba.stackexchange.com/questions/94932/getting-all-descendants-of-a-parent
+            //2. https://www.sqlservertutorial.net/sql-server-basics/sql-server-recursive-cte/
+
+            String findancestores = "with RECURSIVE ancestores (childid, ancestor, lvl) as \n" +
+                    "\t\t( select childid, parentid, 1 from parentchild_relation where childid='"+person.getId()+"'\n" +
+                    "\t\tunion all\n" +
+                    "\t\tselect d.childid, s.parentid, d.lvl + 1\n" +
+                    "\t\tfrom ancestores d join parentchild_relation s on d.ancestor = s.childid) \n" +
+                    "\tselect * from ancestores where lvl < '"+generations + 1+"' order by childid, lvl, ancestor;";
+
+            resultSet = statement.executeQuery(findancestores);
+
+            /*Putting all person id in one arraylist*/
+            List<String> finalancestoresId = new ArrayList<>();
+
+            while (resultSet.next()) {
+                finalancestoresId.add(resultSet.getString("ancestor"));
+            }
+
+            String s = "";
+            for (String p : finalancestoresId) {
+                s = s + "'" + p + "',";
+            }
+            if (s.length() > 1) {
+                s = s.substring(0, s.length() - 1);
+            } else {
+                statement.close();
+                connect.close();
+                return null;
+            }
+
+            String fetchancestoresData = "select * from person where p_id in (" + s + ");";
+            System.out.println(fetchancestoresData);
+
+            resultSet = statement.executeQuery(fetchancestoresData);
+
+            Set<PersonIdentity> ancestoresSet = new HashSet<>();
+
+            while (resultSet.next()) {
+                PersonIdentity pi = new PersonIdentity();
+                pi.setId(resultSet.getString("p_id"));
+                pi.setPersonName(resultSet.getString("name"));
+                pi.setDob(resultSet.getString("dob"));
+                pi.setbLocation(resultSet.getString("bLocation"));
+                pi.setDod(resultSet.getString("dod"));
+                pi.setdLocation(resultSet.getString("dLocation"));
+                pi.setOccupation(resultSet.getString("occupation"));
+                ancestoresSet.add(pi);
+            }
+
+            statement.close();
+            connect.close();
+            return ancestoresSet;
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

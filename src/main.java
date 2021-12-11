@@ -5,20 +5,28 @@ public class main {
 
         /*findBiologicalFamilyMedia------------*/
         Genealogy g = new Genealogy();
-        PersonIdentity p1 = g.findPerson("Shivam");
+        PersonIdentity p1 = g.findPerson("Shivam Bhojani");
 
         List<FileIdentifier> fileObjects = g.findBiologicalFamilyMedia(p1);
         if (fileObjects != null) {
             System.out.println("size = " + fileObjects.size());
         }
+        Set<PersonIdentity> sp = new HashSet<>();
+        sp = g.descendents(p1, 3);
 
-        Set<PersonIdentity> sp = g.descendents(p1, 3);
+        if (sp != null) {
+            for (PersonIdentity s : sp) {
+                System.out.println(s.getId() + "  " + s.getPersonName());
+            }
 
-        for (PersonIdentity s : sp) {
-            System.out.println(s.getId() + "  " + s.getPersonName());
         }
+        sp = g.ancestores(p1, 3);
 
-
+        if (sp!=null) {
+            for (PersonIdentity s : sp) {
+                System.out.println(s.getId() + "  " + s.getPersonName());
+            }
+        }
 
 
         /*find individual in media----------------*/
