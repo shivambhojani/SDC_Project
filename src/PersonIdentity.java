@@ -49,7 +49,7 @@ public class PersonIdentity {
             return pi2;
 
         } catch (SQLException e) {
-            System.out.println("e");
+            System.out.println("Failed to add person. Please try again");
             return null;
         }
     }
@@ -68,7 +68,18 @@ public class PersonIdentity {
             String gender;
             String occupation;
 
-            //conderdeing that map key names will are dob, dLocation, dod, dLocation, gender, occupation
+            /*Checking if the given person is there in database*/
+            resultSet = statement.executeQuery("select * from person where p_id = '"+person.getId()+"';");
+
+            if (resultSet.next()==false)
+            {
+                statement.close();
+                connect.close();
+                System.out.println("Person not found");
+                return false;
+            }
+
+            //Considering that map key names will are dob, dLocation, dod, dLocation, gender, occupation
 
             for (Map.Entry<String, String> entry : attributes.entrySet()) {
                 String key = entry.getKey();
@@ -139,7 +150,7 @@ public class PersonIdentity {
             connect.close();
             return true;
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("Failed to record attributes. Please try again");
             return false;
         }
 
@@ -147,8 +158,8 @@ public class PersonIdentity {
 
     Boolean recordReference(PersonIdentity person, String reference) {
         createConnection conn = new createConnection();
-
         ResultSet resultSet = null;
+
         try {
             Connection connect = conn.startConnection();
             Statement statement = connect.createStatement();
@@ -160,9 +171,11 @@ public class PersonIdentity {
                 statement.close();
                 resultSet.close();
                 connect.close();
+                System.out.println("Person not found");
                 return false;
-            } else {
+            }
 
+            else {
                 String insertReference = "insert into person_references values (null,'" + person.getId() + "','" + reference + "')";
                 statement.executeUpdate(insertReference);
 
@@ -174,7 +187,7 @@ public class PersonIdentity {
             }
 
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("Failed to record reference. Please try again.");
             return false;
 
         }
@@ -195,6 +208,7 @@ public class PersonIdentity {
                 statement.close();
                 resultSet.close();
                 connect.close();
+                System.out.println("");
                 return false;
             } else {
 

@@ -145,10 +145,12 @@ public class Genealogy {
             String findmediabyLocation = "";
 
             if (startDate == null || endDate == null) {
-                findmediabyLocation = "select * from media_archieve where location = '" + location + "');";
+                findmediabyLocation = "select * from media_archieve where location = '" + location + "';";
+                System.out.println(findmediabyLocation);
             } else if (startDate.trim().length() != 0 || endDate.trim().length() != 0) {
                 findmediabyLocation = "select * from media_archieve where date between '" + startDate + "' and '" + endDate + "' " +
-                        "and location='"+location+"';";
+                        "and location='" + location + "';";
+                System.out.println(findmediabyLocation);
             }
 
             resultSet = statement.executeQuery(findmediabyLocation);
