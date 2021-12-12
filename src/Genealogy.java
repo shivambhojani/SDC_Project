@@ -40,7 +40,7 @@ public class Genealogy {
     }
 
     //finding media file by location attribute
-    FileIdentifier findMediaFile(String location) {
+    FileIdentifier findMediaFile(String filelocationwithName) {
         Connection connect = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -50,13 +50,14 @@ public class Genealogy {
             connect = conn.startConnection();
             statement = connect.createStatement();
             statement.executeQuery("use " + conn.databaseName);
-            String selectQuery = "select * from media_archieve where location='" + location + "';";
+            String selectQuery = "select * from media_archieve where filename='" + filelocationwithName + "';";
             resultSet = statement.executeQuery(selectQuery);
             while (resultSet.next()) {
 
                 f.setMediaId(resultSet.getString("mediaId"));
                 f.setFileName(resultSet.getString("filename"));
                 f.setLocation(resultSet.getString("location"));
+                f.setLocation(resultSet.getString("date"));
             }
             statement.close();
             resultSet.close();
@@ -123,6 +124,62 @@ public class Genealogy {
             return null;
         }
     }
+
+    Set<FileIdentifier> findMediaByLocation(String location, String startDate, String endDate) {
+        Connection connect = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        createConnection conn = new createConnection();
+
+        /*Validating tag, startDate and endDate for null for null or empty value*/
+        if (location == null) {
+            return null;
+        } else if (location.trim().length() == 0) {
+            return null;
+        }
+        try {
+            connect = conn.startConnection();
+            statement = connect.createStatement();
+            statement.executeQuery("use " + conn.databaseName);
+
+            String findmediabyLocation = "";
+
+            if (startDate == null || endDate == null) {
+                findmediabyLocation = "select * from media_archieve where location = '" + location + "');";
+            } else if (startDate.trim().length() != 0 || endDate.trim().length() != 0) {
+                findmediabyLocation = "select * from media_archieve where date between '" + startDate + "' and '" + endDate + "' " +
+                        "and location='"+location+"';";
+            }
+
+            resultSet = statement.executeQuery(findmediabyLocation);
+
+            List<String> mediaId = new ArrayList<>();
+            while (resultSet.next()) {
+                mediaId.add(resultSet.getString("mediaId"));
+            }
+
+            Set<FileIdentifier> mediaFileset = new HashSet<>();
+            for (int i = 0; i < mediaId.size(); i++) {
+                FileIdentifier f = new FileIdentifier();
+                resultSet = statement.executeQuery("select * from media_archieve where mediaId='" + mediaId.get(i) + "';");
+                while (resultSet.next()) {
+                    f.setMediaId(resultSet.getString("mediaId"));
+                    f.setLocation(resultSet.getString("location"));
+                    f.setFileName(resultSet.getString("filename"));
+                    f.setDate(resultSet.getString("date"));
+                }
+                mediaFileset.add(f);
+            }
+            statement.close();
+            connect.close();
+            return mediaFileset;
+        } catch (
+                SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     List<FileIdentifier> findIndividualsMedia(Set<PersonIdentity> people, String startDate, String endDate) {
 

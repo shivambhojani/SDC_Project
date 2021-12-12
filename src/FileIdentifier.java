@@ -15,29 +15,38 @@ public class FileIdentifier {
     private String date;
 
 
-    FileIdentifier addMediaFile(String fileLocation) {
+    FileIdentifier addMediaFile(String fileLocationwithName) {
 
-        System.out.println("fileLocation: " + fileLocation);
         createConnection conn = new createConnection();
         Connection connect = conn.startConnection();
         ResultSet resultSet = null;
         try {
             Statement statement = connect.createStatement();
             statement.executeQuery("use " + conn.databaseName);
-            String insertQuery = "insert into media_archieve value (null, '" + fileLocation + "', null, null);";
-            //System.out.println(insertQuery);
-            statement.executeUpdate(insertQuery);
-            FileIdentifier f = new FileIdentifier();
-            f.setLocation(fileLocation);
 
-            String selectQuery = "select * from media_archieve order by mediaId desc limit 1";
-            resultSet = statement.executeQuery(selectQuery);
-            while (resultSet.next()) {
-                f.setMediaId(resultSet.getString("mediaId"));
+            resultSet = statement.executeQuery("select * from media_archieve where filename='" + fileLocationwithName + "';");
+
+            if (resultSet.next() == false) {
+
+                String insertQuery = "insert into media_archieve value (null, null, '" + fileLocationwithName + "', null);";
+
+                statement.executeUpdate(insertQuery);
+                FileIdentifier f = new FileIdentifier();
+                f.setLocation(fileLocationwithName);
+
+                String selectQuery = "select * from media_archieve order by mediaId desc limit 1";
+                resultSet = statement.executeQuery(selectQuery);
+                while (resultSet.next()) {
+                    f.setMediaId(resultSet.getString("mediaId"));
+                }
+                statement.close();
+                connect.close();
+                return f;
+            } else {
+
+                return null;
             }
-            statement.close();
-            connect.close();
-            return f;
+
         } catch (SQLException e) {
             System.out.println(e);
             return null;
@@ -53,7 +62,7 @@ public class FileIdentifier {
             Statement statement = connect.createStatement();
             statement.executeQuery("use " + conn.databaseName);
             String date;
-            String filename;
+            String location;
 
             /*check whether the media file exists in media_archive or not*/
             resultSet = statement.executeQuery("select * from media_archieve where mediaId = '" + fileIdentifier.getMediaId() + "';");
@@ -77,10 +86,10 @@ public class FileIdentifier {
                             System.out.println("Problem while giving date input. Date format should be yyyy-mm-dd");
                         }
                     }
-                } else if (Objects.equals(key, "filename")) {
+                } else if (Objects.equals(key, "location")) {
                     if (value != null) {
-                        filename = value;
-                        String updateQuery = "update media_archieve set filename='" + filename + "' where mediaId='" + fileIdentifier.getMediaId() + "';";
+                        location = value;
+                        String updateQuery = "update media_archieve set location='" + location + "' where mediaId='" + fileIdentifier.getMediaId() + "';";
                         statement.executeUpdate(updateQuery);
                     }
                 }
