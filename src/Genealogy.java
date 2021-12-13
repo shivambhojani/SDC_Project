@@ -4,20 +4,27 @@ import java.util.*;
 
 public class Genealogy {
 
+    /*this method checks the person table with the given name and returns the object with all the column values relate to the given person name*/
+    /*Returns null in case person is not found*/
     PersonIdentity findPerson(String name) {
         Connection connect = null;
         Statement statement = null;
         ResultSet resultSet = null;
-        PersonIdentity p = new PersonIdentity();
         createConnection conn = new createConnection();
         try {
             connect = conn.startConnection();
             statement = connect.createStatement();
             statement.executeQuery("use " + conn.databaseName);
+
+            /*Checks for a person with the given name in person table*/
             String selectQuery = "select * from person where name='" + name + "';";
             resultSet = statement.executeQuery(selectQuery);
-            while (resultSet.next()) {
 
+            /*person object in which we will be storing */
+            PersonIdentity p = new PersonIdentity();
+
+            /*If person found then it will assign each value to the object variables from person table column*/
+            if (resultSet.next()) {
                 p.setId(resultSet.getString("p_id"));
                 p.setPersonName(resultSet.getString("name"));
                 p.setDob(resultSet.getString("dob"));
@@ -25,18 +32,25 @@ public class Genealogy {
                 p.setDod(resultSet.getString("dod"));
                 p.setdLocation(resultSet.getString("dLocation"));
                 p.setOccupation(resultSet.getString("occupation"));
+                statement.close();
+                resultSet.close();
+                connect.close();
+                return p;
             }
-            statement.close();
-            resultSet.close();
-            connect.close();
+            else
+            {
+                /*if no record found then it will return null with a user facing message*/
+
+                System.out.println("Person with Name = "+name+"  not found");
+                statement.close();
+                connect.close();
+                return null;
+            }
+
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Unable to retrieve person date Please try again.");
             return null;
         }
-
-        System.out.println(p.getPersonName());
-
-        return p;
     }
 
     //finding media file by location attribute

@@ -73,8 +73,11 @@ public class main {
 
 
         /*Add media file-----------------------*/
-        //  FileIdentifier fi = new FileIdentifier();
-        //  fi = fi.addMediaFile("Dublin2");
+//        FileIdentifier fi = new FileIdentifier();
+//        fi = fi.addMediaFile("C:/Shivam/a.txt");
+//
+//        System.out.println(fi.getMediaId());
+//        System.out.println(fi.getFileName());
 
         /*find file by filelocationwithName----------------------------------*/
 //        Genealogy gn = new Genealogy();
@@ -151,10 +154,12 @@ public class main {
 //        }
 
         /*FIND PERSON AND RECORD ATTRIBUTES---------------------------*/
-//        System.out.println("############################3");
-//        Genealogy g = new Genealogy();
-//        PersonIdentity p1 = g.findPerson("Shivam Bhojani");
-//        PersonIdentity p2 = g.findPerson("person1");
+        System.out.println("############################3");
+        Genealogy g = new Genealogy();
+        PersonIdentity p1 = g.findPerson("Shivam");
+
+        System.out.println(p1.getId() + p1.getPersonName());
+       // PersonIdentity p2 = g.findPerson("person1");
 //        PersonIdentity p3 = g.findPerson("person3");
 //        PersonIdentity p4 = g.findPerson("person4");
 
@@ -200,10 +205,10 @@ public class main {
 
 
         /*Add Relations between two perso */
-        Genealogy gg = new Genealogy();
-        PersonIdentity person3 = g3.findPerson("Kandarp");
-        PersonIdentity person4 = g3.findPerson("Rachel");
-        PersonIdentity person5 = g3.findPerson("J");
+//        Genealogy gg = new Genealogy();
+//        PersonIdentity person3 = g3.findPerson("Kandarp");
+//        PersonIdentity person4 = g3.findPerson("Rachel");
+//        PersonIdentity person5 = g3.findPerson("J");
 //        BiologicalRelation br = new BiologicalRelation();
 //
 //        System.out.println(br.recordPartnering(person3, person4));
@@ -211,8 +216,8 @@ public class main {
 
         /*Dissolution*/
 
-        BiologicalRelation brrr = new BiologicalRelation();
-        System.out.println(brrr.recordDissolution(person3,person4));
-        System.out.println(brrr.recordDissolution(person3,person5));
+//        BiologicalRelation brrr = new BiologicalRelation();
+//        System.out.println(brrr.recordDissolution(person3,person4));
+//        System.out.println(brrr.recordDissolution(person3,person5));
     }
 }
