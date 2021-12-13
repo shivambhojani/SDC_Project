@@ -24,8 +24,21 @@ public class BiologicalRelation {
         Removal = removal;
     }
 
-
     Boolean recordChild(PersonIdentity parent, PersonIdentity child) {
+
+        if (parent==null)
+        {
+            System.out.println("Provided parent object is null");
+            return false;
+        }
+
+        if (child==null)
+        {
+            System.out.println("Provided child object is null");
+            return false;
+        }
+
+
         // if both person identity are same then it will return false, as a person cannot be a child of himself/herself.
         if (Objects.equals(parent.getId(), child.getId())) {
             return false;
@@ -93,6 +106,20 @@ public class BiologicalRelation {
     }
 
     Boolean recordPartnering(PersonIdentity partner1, PersonIdentity partner2) {
+
+        if (partner1==null)
+        {
+            System.out.println("Provided parent object is null");
+            return false;
+        }
+
+        if (partner2==null)
+        {
+            System.out.println("Provided child object is null");
+            return false;
+        }
+
+
         // if both person identity are same then it will return false, as a person cannot be a child of himself/herself.
         if (Objects.equals(partner1.getId(), partner2.getId())) {
             return false;
@@ -139,6 +166,20 @@ public class BiologicalRelation {
     }
 
     Boolean recordDissolution(PersonIdentity partner1, PersonIdentity partner2) {
+
+        if (partner1==null)
+        {
+            System.out.println("Provided parent object is null");
+            return false;
+        }
+
+        if (partner2==null)
+        {
+            System.out.println("Provided child object is null");
+            return false;
+        }
+
+
         // if both person identity are same then it will return false, as a person cannot be a child of himself/herself.
         if (Objects.equals(partner1.getId(), partner2.getId())) {
             return false;

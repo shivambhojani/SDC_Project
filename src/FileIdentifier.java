@@ -16,6 +16,18 @@ public class FileIdentifier {
 
     /*this method creates new record in media archieve. It will enter filename as given by method  */
     FileIdentifier addMediaFile(String fileLocationwithName) {
+
+        if(fileLocationwithName==null)
+        {
+            System.out.println("Given filename is null");
+            return null;
+        }
+        else if (fileLocationwithName.trim().length()==0)
+        {
+            System.out.println("Given filename is empty");
+            return null;
+        }
+
         createConnection conn = new createConnection();
         Connection connect = conn.startConnection();
         ResultSet resultSet = null;
@@ -69,6 +81,22 @@ public class FileIdentifier {
 
     /*this methods records attributes like location and date for a particular media file*/
     Boolean recordMediaAttributes(FileIdentifier fileIdentifier, Map<String, String> attributes) {
+        if (fileIdentifier == null)
+        {
+            System.out.println("Provided file object is null");
+            return false;
+        }
+        if (attributes==null)
+        {
+            System.out.println("Provided attributes map is null");
+            return false;
+        }
+        else if (attributes.size()==0)
+        {
+            System.out.println("Provided attributes map is empty");
+            return false;
+        }
+
         createConnection conn = new createConnection();
         ResultSet resultSet = null;
 
@@ -125,6 +153,22 @@ public class FileIdentifier {
     /*this method will add tags to the given media object*/
     /*the data will be recorded to media_tags*/
     Boolean tagMedia(FileIdentifier fileIdentifier, String tag) {
+        if (fileIdentifier == null)
+        {
+            System.out.println("Provided file object is null");
+            return false;
+        }
+
+        if(tag==null)
+        {
+            System.out.println("Given tag is null");
+            return false;
+        }
+        else if (tag.trim().length()==0)
+        {
+            System.out.println("Given tag is empty");
+            return false;
+        }
         createConnection conn = new createConnection();
         ResultSet resultSet = null;
 
@@ -163,6 +207,19 @@ public class FileIdentifier {
     /*this method will validate the media ID and all the person in media, before entering that into table*/
     /*this method will also validation the existing record in people in media and eliminate duplicate records */
     Boolean peopleInMedia(FileIdentifier fileIdentifier, List<PersonIdentity> people) {
+        if (fileIdentifier == null)
+        {
+            System.out.println("Provided file object is null");
+            return false;
+        }
+
+        if (people.size()==0)
+        {
+            System.out.println("Provided person list is empty");
+            return false;
+        }
+
+
         createConnection conn = new createConnection();
         ResultSet resultSet = null;
 

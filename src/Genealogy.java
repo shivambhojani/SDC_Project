@@ -36,12 +36,9 @@ public class Genealogy {
                 resultSet.close();
                 connect.close();
                 return p;
-            }
-            else
-            {
+            } else {
                 /*if no record found then it will return null with a user facing message*/
-
-                System.out.println("Person with Name = "+name+"  not found");
+                System.out.println("Person with Name = " + name + "  not found");
                 statement.close();
                 connect.close();
                 return null;
@@ -53,49 +50,102 @@ public class Genealogy {
         }
     }
 
+    String findName(PersonIdentity id) {
+        if (id != null) {
+            Connection connect = null;
+            Statement statement = null;
+            ResultSet resultSet = null;
+            createConnection conn = new createConnection();
+            try {
+                connect = conn.startConnection();
+                statement = connect.createStatement();
+                statement.executeQuery("use " + conn.databaseName);
+
+                resultSet = statement.executeQuery("select * from person where p_id = '" + id.getId() + "';");
+                if (resultSet.next()) {
+                    return resultSet.getString("name");
+                } else {
+                    System.out.println("Name not found in records");
+                    return "";
+                }
+            } catch (SQLException e) {
+                System.out.println("Unable to fetch name. Please try again");
+                return "";
+            }
+
+        } else {
+            System.out.println("Provided person object is null");
+            return null;
+        }
+    }
+
     //finding media file by location attribute
     FileIdentifier findMediaFile(String filelocationwithName) {
+
+        if (filelocationwithName == null) {
+            System.out.println("Given name is null");
+            return null;
+        } else if (filelocationwithName.trim().length() == 0) {
+            System.out.println("Given name is empty");
+            return null;
+        }
+
         Connection connect = null;
         Statement statement = null;
         ResultSet resultSet = null;
-        FileIdentifier f = new FileIdentifier();
+
         createConnection conn = new createConnection();
         try {
             connect = conn.startConnection();
             statement = connect.createStatement();
             statement.executeQuery("use " + conn.databaseName);
+
+            /*Query to fetch media details from media_archieve based on the given filename with path*/
             String selectQuery = "select * from media_archieve where filename='" + filelocationwithName + "';";
             resultSet = statement.executeQuery(selectQuery);
-            while (resultSet.next()) {
 
+            if (resultSet.next()) {
+                /*If record found then it will store each column value in FileIdentifier object and return it*/
+
+                FileIdentifier f = new FileIdentifier();
                 f.setMediaId(resultSet.getString("mediaId"));
                 f.setFileName(resultSet.getString("filename"));
                 f.setLocation(resultSet.getString("location"));
                 f.setLocation(resultSet.getString("date"));
+                statement.close();
+                resultSet.close();
+                connect.close();
+                return f;
+            } else {
+                /*if no record found then it will return null with a user facing message*/
+
+                System.out.println("Media file " + filelocationwithName + " not found");
+                statement.close();
+                connect.close();
+                return null;
             }
-            statement.close();
-            resultSet.close();
-            connect.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
 
-        return f;
+
     }
 
     Set<FileIdentifier> findMediaByTag(String tag, String startDate, String endDate) {
+        /*Validating tag for null or empty value*/
+        if (tag == null) {
+            System.out.println("Provided tag value is null");
+            return null;
+        } else if (tag.trim().length() == 0) {
+            System.out.println("Provided tag value is empty");
+            return null;
+        }
         Connection connect = null;
         Statement statement = null;
         ResultSet resultSet = null;
         createConnection conn = new createConnection();
-
-        /*Validating tag, startDate and endDate for null for null or empty value*/
-        if (tag == null) {
-            return null;
-        } else if (tag.trim().length() == 0) {
-            return null;
-        }
         try {
             connect = conn.startConnection();
             statement = connect.createStatement();
@@ -140,6 +190,15 @@ public class Genealogy {
     }
 
     Set<FileIdentifier> findMediaByLocation(String location, String startDate, String endDate) {
+        /*Validating Location for null or empty value*/
+        if (location == null) {
+            System.out.println("Provided location value is null");
+            return null;
+        } else if (location.trim().length() == 0) {
+            System.out.println("Provided location value is empty");
+            return null;
+        }
+
         Connection connect = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -196,8 +255,15 @@ public class Genealogy {
         }
     }
 
-
     List<FileIdentifier> findIndividualsMedia(Set<PersonIdentity> people, String startDate, String endDate) {
+
+        if (people == null) {
+            System.out.println("Provided set of people is null");
+            return null;
+        } else if (people.size() == 0) {
+            System.out.println("Provided set of people is empty");
+            return null;
+        }
 
         Connection connect = null;
         Statement statement = null;
@@ -308,6 +374,12 @@ public class Genealogy {
     }
 
     List<String> notesAndReferences(PersonIdentity person) {
+
+        if (person == null) {
+            System.out.println("Provided person object is null");
+            return null;
+        }
+
         Connection connect = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -347,6 +419,12 @@ public class Genealogy {
     }
 
     List<FileIdentifier> findBiologicalFamilyMedia(PersonIdentity person) {
+
+        if (person == null) {
+            System.out.println("Provided person object is null");
+            return null;
+        }
+
         Connection connect = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -387,6 +465,16 @@ public class Genealogy {
     }
 
     Set<PersonIdentity> descendents(PersonIdentity person, Integer generations) {
+
+        if (person == null) {
+            System.out.println("Provided person object is null");
+            return null;
+        }
+        if (generations <= 0) {
+            System.out.println("Number of generation is invalid");
+            return null;
+        }
+
         Connection connect = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -468,7 +556,14 @@ public class Genealogy {
     }
 
     Set<PersonIdentity> ancestores(PersonIdentity person, Integer generations) {
-
+        if (person == null) {
+            System.out.println("Provided person object is null");
+            return null;
+        }
+        if (generations <= 0) {
+            System.out.println("Number of generation is invalid");
+            return null;
+        }
         Connection connect = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -549,6 +644,16 @@ public class Genealogy {
     }
 
     BiologicalRelation findRelation(PersonIdentity person1, PersonIdentity person2) {
+        if (person1 == null) {
+            System.out.println("Provided person1 object is null");
+            return null;
+        }
+        if (person2 == null) {
+            System.out.println("Provided person2 object is null");
+            return null;
+        }
+
+
         Connection connect = null;
         Statement statement = null;
         ResultSet resultSet = null;

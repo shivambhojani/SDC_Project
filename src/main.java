@@ -1,7 +1,13 @@
+import java.io.File;
 import java.util.*;
 
 public class main {
     public static void main(String[] args) {
+
+        /*findName--------------*/
+//        Genealogy g = new Genealogy();
+//        PersonIdentity pp = g.findPerson("Shivam5");
+//        System.out.println("name: " + g.findName(pp));
 
 
         /*findBiologicalFamilyMedia------------*/
@@ -31,14 +37,14 @@ public class main {
 
 
         /*find relations between two person*/
-//        Genealogy g = new Genealogy();
-//        PersonIdentity p1 = g.findPerson("Shivam Bhojani");
-//        PersonIdentity p2 = g.findPerson("B");
-//
-//        BiologicalRelation b = g.findRelation(p1,p2);
-//
-//        System.out.println("Removal: "+b.getRemoval());
-//        System.out.println("CousinShip:" + b.getCousinship());
+        Genealogy g = new Genealogy();
+        PersonIdentity p1 = g.findPerson("A");
+        PersonIdentity p2 = g.findPerson("B");
+
+        BiologicalRelation b = g.findRelation(p1,p2);
+
+        System.out.println("Removal: "+b.getRemoval());
+        System.out.println("CousinShip:" + b.getCousinship());
 
 
         /*find individual in media----------------*/
@@ -83,7 +89,8 @@ public class main {
 //        Genealogy gn = new Genealogy();
 //        FileIdentifier f = new FileIdentifier();
 //        f = gn.findMediaFile("Dublin2");
-//
+//        System.out.println("Id: "+f.getMediaId());
+
 //        System.out.println(f.getMediaId() + f.getFileName() + f.getLocation() + f.getDate());
 
         /*Add media tags-------------------------*/
@@ -91,10 +98,12 @@ public class main {
 //        fid.tagMedia(f,"Test tag");
 
         /*Add media attributes-------------*/
+//        Genealogy gn = new Genealogy();
+//        FileIdentifier f = gn.findMediaFile("Dublin2");
 //        Map<String, String> mediaMap = new HashMap<>();
 //        mediaMap.put("date", "1990-04-15");
 //        mediaMap.put("location", "Halifax");
-        //  f.recordMediaAttributes(f,mediaMap);
+//        f.recordMediaAttributes(f, mediaMap);
 
         /*Add people in media*/
 //        List<PersonIdentity> people = new ArrayList<>();
@@ -139,7 +148,6 @@ public class main {
 //            System.out.println(file.getMediaId());
 //            System.out.println(file.getLocation());
 //        }
-        System.out.println("-----------");
 
         /*Get notes and reference*/
 //        Genealogy gen = new Genealogy();
@@ -154,12 +162,12 @@ public class main {
 //        }
 
         /*FIND PERSON AND RECORD ATTRIBUTES---------------------------*/
-        System.out.println("############################3");
-        Genealogy g = new Genealogy();
-        PersonIdentity p1 = g.findPerson("Shivam");
+//        System.out.println("############################3");
+//        Genealogy g = new Genealogy();
+//        PersonIdentity p1 = g.findPerson("Shivam");
 
-        System.out.println(p1.getId() + p1.getPersonName());
-       // PersonIdentity p2 = g.findPerson("person1");
+        // System.out.println(p1.getId() + p1.getPersonName());
+        // PersonIdentity p2 = g.findPerson("person1");
 //        PersonIdentity p3 = g.findPerson("person3");
 //        PersonIdentity p4 = g.findPerson("person4");
 
@@ -186,14 +194,16 @@ public class main {
 //        System.out.println(record.recordAttributes(p4, m));
 
         /*RECORD CHILD------------------------------------*/
-        Genealogy g3 = new Genealogy();
+//        Genealogy g3 = new Genealogy();
 //        PersonIdentity person3 = g3.findPerson("Kandarp");
 //        PersonIdentity person4 = g3.findPerson("Meghna");
-
-        //PersonIdentity person5 = g3.findPerson("person3");
+//
+//        person3 = null;
+//
+//        PersonIdentity person5 = g3.findPerson("person3");
 //        BiologicalRelation br = new BiologicalRelation();
-        //System.out.println(br.recordChild(person3, person4));
-        //System.out.println(br.recordChild(person4, person5));
+//        System.out.println(br.recordChild(person3, person4));
+//        System.out.println(br.recordChild(person4, person5));
 
 
         /*Record references and notes---------------------------*/

@@ -17,10 +17,12 @@ public class PersonIdentity {
 
         if(name==null)
         {
+            System.out.println("Given name is null");
             return null;
         }
         else if (name.trim().length()==0)
         {
+            System.out.println("Given name is empty");
             return null;
         }
         System.out.println(name);
@@ -55,6 +57,24 @@ public class PersonIdentity {
     }
 
     Boolean recordAttributes(PersonIdentity person, Map<String, String> attributes) {
+
+        if (person == null)
+        {
+            System.out.println("Provided person object is null");
+            return false;
+        }
+
+        if (attributes==null)
+        {
+            System.out.println("Provided attributes map is null");
+            return false;
+        }
+        else if (attributes.size()==0)
+        {
+            System.out.println("Provided attributes map is empty");
+            return false;
+        }
+
         createConnection conn = new createConnection();
         Connection connect = conn.startConnection();
         ResultSet resultSet = null;
@@ -101,7 +121,7 @@ public class PersonIdentity {
                         try {
                             statement.executeUpdate(updateQuery);
                         } catch (Exception e) {
-                            System.out.println("Date of Birth format is wrong");
+                            System.out.println("Birth location not updated");
                         }
                     }
                 } else if (Objects.equals(key, "dod")) {
@@ -111,7 +131,7 @@ public class PersonIdentity {
                         try {
                             statement.executeUpdate(updateQuery);
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                            System.out.println("Date of death not updated");
                         }
                     }
                 } else if (Objects.equals(key, "dLocation")) {
@@ -121,7 +141,7 @@ public class PersonIdentity {
                         try {
                             statement.executeUpdate(updateQuery);
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                            System.out.println("Location of death not updated");
                         }
                     }
                 } else if (Objects.equals(key, "gender")) {
@@ -131,7 +151,7 @@ public class PersonIdentity {
                         try {
                             statement.executeUpdate(updateQuery);
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                            System.out.println("Gender not updated");
                         }
                     }
                 } else if (Objects.equals(key, "occupation")) {
@@ -141,7 +161,7 @@ public class PersonIdentity {
                         try {
                             statement.executeUpdate(updateQuery);
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                            System.out.println("Occupation not updated");
                         }
                     }
                 }
@@ -157,6 +177,22 @@ public class PersonIdentity {
     }
 
     Boolean recordReference(PersonIdentity person, String reference) {
+        if (person == null)
+        {
+            System.out.println("Provided person object is null");
+            return false;
+        }
+        if(reference==null)
+        {
+            System.out.println("Given reference is null");
+            return false;
+        }
+        else if (reference.trim().length()==0)
+        {
+            System.out.println("Given reference is empty");
+            return false;
+        }
+
         createConnection conn = new createConnection();
         ResultSet resultSet = null;
 
@@ -194,6 +230,21 @@ public class PersonIdentity {
     }
 
     Boolean recordNote(PersonIdentity person, String note) {
+        if (person == null)
+        {
+            System.out.println("Provided person object is null");
+            return false;
+        }
+        if(note==null)
+        {
+            System.out.println("Given note is null");
+            return false;
+        }
+        else if (note.trim().length()==0)
+        {
+            System.out.println("Given note is empty");
+            return false;
+        }
         createConnection conn = new createConnection();
 
         ResultSet resultSet = null;
@@ -210,8 +261,8 @@ public class PersonIdentity {
                 connect.close();
                 System.out.println("");
                 return false;
-            } else {
-
+            }
+            else {
                 String insertReference = "insert into person_notes values (null,'" + person.getId() + "','" + note + "')";
                 statement.executeUpdate(insertReference);
 
