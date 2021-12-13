@@ -50,7 +50,10 @@ public class Genealogy {
         }
     }
 
+    /*This method fetches the person id from the given person object and checks the person table for getting the person name*/
     String findName(PersonIdentity id) {
+
+        /*validating the object for null value*/
         if (id != null) {
             Connection connect = null;
             Statement statement = null;
@@ -61,19 +64,24 @@ public class Genealogy {
                 statement = connect.createStatement();
                 statement.executeQuery("use " + conn.databaseName);
 
+                /*Select query in person table with the given person id*/
                 resultSet = statement.executeQuery("select * from person where p_id = '" + id.getId() + "';");
                 if (resultSet.next()) {
+
+                    /*if record found, then it will fetch the value from name column from person table*/
                     return resultSet.getString("name");
                 } else {
+
+                    /*In case of no records found by the given id*/
                     System.out.println("Name not found in records");
-                    return "";
+                    return null;
                 }
             } catch (SQLException e) {
                 System.out.println("Unable to fetch name. Please try again");
                 return null;
             }
-
         } else {
+            /*if the provided object is null, the method will return null with user facing message*/
             System.out.println("Provided person object is null");
             return null;
         }
@@ -133,8 +141,10 @@ public class Genealogy {
 
     }
 
+    /*This method fetches the media ID from the given media object and checks the media_archieve table for getting the media filename */
     String findMediaFile( FileIdentifier fileId )
     {
+        /*validating the object for null value*/
         if (fileId != null) {
             Connection connect = null;
             Statement statement = null;
@@ -145,12 +155,18 @@ public class Genealogy {
                 statement = connect.createStatement();
                 statement.executeQuery("use " + conn.databaseName);
 
+                /*Select query in media_archieve table with the given person id*/
                 resultSet = statement.executeQuery("select * from media_archieve where mediaId = '" + fileId.getMediaId() + "';");
                 if (resultSet.next()) {
+
+                    /*if record found then it will fetch the value from column filename and return the value*/
                     return resultSet.getString("filename");
-                } else {
+                }
+                else {
+
+                    /*if no record found then the method will return null with a user facing message*/
                     System.out.println("Name not found in records");
-                    return "";
+                    return null;
                 }
             } catch (SQLException e) {
                 System.out.println("Unable to fetch filename. Please try again");
@@ -162,7 +178,6 @@ public class Genealogy {
             return null;
         }
     }
-
 
     Set<FileIdentifier> findMediaByTag(String tag, String startDate, String endDate) {
         /*Validating tag for null or empty value*/
@@ -467,22 +482,28 @@ public class Genealogy {
             statement.executeQuery("use " + conn.databaseName);
             resultSet = statement.executeQuery("select * from person where p_id = '" + person.getId() + "';");
             if (resultSet.next() == false) {
-                System.out.println("Person not found in databse");
+                System.out.println("Person not found in database");
                 return null;
             }
             String findChilderen = "select * from parentchild_relation where parentid = '" + person.getId() + "';";
 
             resultSet = statement.executeQuery(findChilderen);
 
-            Set<PersonIdentity> personObject = new HashSet<>();
+            Set<PersonIdentity> listOfChildern = new HashSet<>();
 
             while (resultSet.next()) {
                 PersonIdentity pr = new PersonIdentity();
                 //System.out.println("Child = " +resultSet.getString("childid") );
                 pr.setId(resultSet.getString("childid"));
-                personObject.add(pr);
+                listOfChildern.add(pr);
             }
-            List<FileIdentifier> fileList = findIndividualsMedia(personObject, null, null);
+
+            if (listOfChildern.size()==0)
+            {
+                System.out.println("No children recorded for the given person");
+                return null;
+            }
+            List<FileIdentifier> fileList = findIndividualsMedia(listOfChildern, null, null);
 
             statement.close();
             connect.close();
@@ -495,12 +516,16 @@ public class Genealogy {
 
     }
 
+    /*the method returns a set of person object which are descendents of the given person till the given number of generation*/
     Set<PersonIdentity> descendents(PersonIdentity person, Integer generations) {
 
+        /*validating person object for null value*/
         if (person == null) {
             System.out.println("Provided person object is null");
             return null;
         }
+
+        /*validating generations for invalid value*/
         if (generations <= 0) {
             System.out.println("Number of generation is invalid");
             return null;
@@ -535,7 +560,7 @@ public class Genealogy {
                     "union all\n" +
                     "select d.parentid, s.childid, d.lvl + 1\n" +
                     "from descendants d join parentchild_relation  s on d.descendant = s.parentid) \n" +
-                    "select * from descendants where lvl< '" + generations + 1 + "' order by parentid, lvl, descendant;";
+                    "select * from descendants where lvl < '" + (generations+1) + "' order by lvl asc;";
 
             resultSet = statement.executeQuery(finddescendents);
 
@@ -623,7 +648,7 @@ public class Genealogy {
                     "\t\tunion all\n" +
                     "\t\tselect d.childid, s.parentid, d.lvl + 1\n" +
                     "\t\tfrom ancestores d join parentchild_relation s on d.ancestor = s.childid) \n" +
-                    "\tselect * from ancestores where lvl < '" + generations + 1 + "' order by childid, lvl, ancestor;";
+                    "\tselect * from ancestores where lvl < '" + (generations + 1) + "' order by lvl asc;";
 
             resultSet = statement.executeQuery(findancestores);
 
@@ -674,17 +699,28 @@ public class Genealogy {
         }
     }
 
+
+    /*this method will return a BiologicalRelation object which will have CousinShip and Removal values in it, based on the relations of two person*/
+    /*It will return null value of one of the given person object is null*/
     BiologicalRelation findRelation(PersonIdentity person1, PersonIdentity person2) {
+
+        /*Validating person1 object for null value*/
         if (person1 == null) {
             System.out.println("Provided person1 object is null");
             return null;
         }
+        /*Validating person2 object for null value*/
         if (person2 == null) {
             System.out.println("Provided person2 object is null");
             return null;
         }
 
-
+        /*Checking if person1 and person2 are same*/
+        if (Objects.equals(person1.getId(), person2.getId()))
+        {
+            System.out.println("Given person1 and person2 are same. Please try again with correct arguments.");
+            return null;
+        }
         Connection connect = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -695,20 +731,30 @@ public class Genealogy {
             statement = connect.createStatement();
             statement.executeQuery("use " + conn.databaseName);
 
-            /*Checking if persons are valid or not*/
+            /*Finding record for a person1 in the person table.*/
+            /*this validation will check if the person is known to database or not*/
             String selectQuery1 = "select * from person where p_id = '" + person1.getId() + "';";
             resultSet = statement.executeQuery(selectQuery1);
             if (resultSet.next() == false) {
+                System.out.println("Person 1 is not in records");
                 statement.close();
+                connect.close();
+                return null;
             }
 
+            /*Finding record for a person2 in the person table.*/
+            /*this validation will check if the person is known to database or not*/
             resultSet = null;
             selectQuery1 = "select * from person where p_id = '" + person2.getId() + "';";
             resultSet = statement.executeQuery(selectQuery1);
             if (resultSet.next() == false) {
+                System.out.println("Person 2 is not in records");
                 statement.close();
+                connect.close();
+                return null;
             }
 
+            /*Query to find all the anscestors for person1*/
             String findAllAncestors1 = "with RECURSIVE ancestores (childid, ancestor, lvl) as \n" +
                     "( select childid, parentid, 1 from parentchild_relation where childid='" + person1.getId() + "'\n" +
                     "union all\n" +
@@ -716,6 +762,7 @@ public class Genealogy {
                     "from ancestores d join parentchild_relation s on d.ancestor = s.childid) \n" +
                     "select * from ancestores order by lvl asc;";
 
+            /*Query to find all the anscestors for person2*/
             String findAllAncestors2 = "with RECURSIVE ancestores (childid, ancestor, lvl) as \n" +
                     "( select childid, parentid, 1 from parentchild_relation where childid='" + person2.getId() + "'\n" +
                     "union all\n" +
@@ -724,75 +771,93 @@ public class Genealogy {
                     "select * from ancestores order by lvl asc;";
 
 
+            /*Fetching all ancestors of person1*/
             resultSet = statement.executeQuery(findAllAncestors1);
+
+            // this list will help us store all anscestors of person1 from generation 1 to higher
             List<String> person1AncestorsId = new ArrayList<>();
+
+            // this list will help us store all anscestors from generation1 to higher
             Map<String, String> person1AncestorsLevel = new HashMap<>();
 
-            /*adding self as ancestor at level 0*/
+            /*Adding self as one of the ancestors at level 0 . This will help us to identify if in case person1 is ancestor of person2*/
             person1AncestorsId.add(person1.getId());
             person1AncestorsLevel.put(person1.getId(), "0");
 
+            /*Storing ancestor and their generation level in list and Map*/
             while (resultSet.next()) {
                 person1AncestorsId.add(resultSet.getString("ancestor"));
                 person1AncestorsLevel.put(resultSet.getString("ancestor"), resultSet.getString("lvl"));
             }
 
-            System.out.println(person1AncestorsId);
-
             resultSet = null;
+            /*Fetching all ancestors of person1*/
             resultSet = statement.executeQuery(findAllAncestors2);
+
+            // this list will help us store all anscestors of person2 from generation 1 to higher
             List<String> person2AncestorsId = new ArrayList<>();
+
+            // this list will help us store all anscestors of person2 from generation1 to higher
             Map<String, String> person2AncestorsLevel = new HashMap<>();
 
-            /*adding self as ancestor at level 0*/
+            /*Adding self as one of the ancestors at level 0 . This will help us to identify if in case person2 is ancestor of person1*/
             person2AncestorsId.add(person2.getId());
             person2AncestorsLevel.put(person2.getId(), "0");
 
+            /*Storing ancestor and their generation level in list and Map*/
             while (resultSet.next()) {
                 person2AncestorsId.add(resultSet.getString("ancestor"));
                 person2AncestorsLevel.put(resultSet.getString("ancestor"), resultSet.getString("lvl"));
             }
 
-            System.out.println(person2AncestorsId);
 
+            /*this list will have all the common ancestors between person1 and person2.*/
             List<String> commonAncestorsId = new ArrayList<>();
 
+            /*Comparison logic between person1 ancestor and person2 ancestor*/
             for (String s : person1AncestorsId) {
                 if (person2AncestorsId.contains(s)) {
                     commonAncestorsId.add(s);
                 }
             }
 
-            String referencesAncestor = "";
-            int person1Level = 0;
-            int person2Level = 0;
+            /*this variables will store the ancestors and generation number at which the common ancestor are found for each person*/
+
+
+            String referencesAncestor = "";                  /*for the common ancestor found */
+            int person1Level = 0;                           /*to store the generation level of common ancestor as per person1*/
+            int person2Level = 0;                           /*to store the generation level of common ancestor as per person2*/
 
             /*Calculating cousinShip and removal based on the ancestors of both person*/
+
+            /*creating object of BiologicalRelation for returning*/
             BiologicalRelation br = new BiologicalRelation();
 
+            /*Checking of any common ancestor found or not*/
             if (!commonAncestorsId.isEmpty()) {
 
+                /*As the ancestors found are in ascending order of generation level, we are taking the first common ancestor found*/
                 referencesAncestor = commonAncestorsId.get(0);
                 person1Level = Integer.parseInt(person1AncestorsLevel.get(referencesAncestor));
                 person2Level = Integer.parseInt(person2AncestorsLevel.get(referencesAncestor));
 
+                /*Formula for CousinShip : Minimum of person1Level and person2Level -1 */
+                /*Formula for Removal    : Absolute value of person1level - person2level*/
+
+                /*Storing values in Cousinship and Removal, which are the class variables of Biologicalrelation class*/
                 br.setCousinship(String.valueOf(Math.min(person1Level, person2Level) - 1));
                 br.setRemoval(String.valueOf(Math.abs(person1Level - person2Level)));
 
-                //System.out.println("Counsinship = " + (Math.min(person1Level, person2Level) - 1));
-                //System.out.println("Removal = " + (Math.abs(person1Level - person2Level)));
 
             } else if (commonAncestorsId.isEmpty()) {
-
+                System.out.println("No biological relation found between the given two person as they do not have any common ancestor");
                 br.setCousinship("None");
                 br.setRemoval("None");
             }
-
-
             return br;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("");
             return null;
         }
     }

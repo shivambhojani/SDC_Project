@@ -4,10 +4,6 @@ import java.util.*;
 public class main {
     public static void main(String[] args) {
 
-        Date d1 = new Date(2000, 11, 21);
-        System.out.println(d1.getMonth());
-
-
         /*findName--------------*/
 //        Genealogy g = new Genealogy();
 //        PersonIdentity pp = g.findPerson("Shivam5");
@@ -15,35 +11,35 @@ public class main {
 
 
         /*findBiologicalFamilyMedia------------*/
-//        Genealogy g = new Genealogy();
-//        PersonIdentity p1 = g.findPerson("A");
-//
-//        List<FileIdentifier> fileObjects = g.findBiologicalFamilyMedia(p1);
-//        if (fileObjects != null) {
-//            System.out.println("size = " + fileObjects.size());
-//        }
-//        Set<PersonIdentity> sp = new HashSet<>();
-//        sp = g.descendents(p1, 3);
-//
-//        if (sp != null) {
-//            for (PersonIdentity s : sp) {
-//                System.out.println(s.getId() + "  " + s.getPersonName());
-//            }
-//
-//        }
-//        sp = g.ancestores(p1, 3);
-//
-//        if (sp!=null) {
-//            for (PersonIdentity s : sp) {
-//                System.out.println(s.getId() + "  " + s.getPersonName());
-//            }
-//        }
+        Genealogy g = new Genealogy();
+        PersonIdentity p1 = g.findPerson("D");
+
+        List<FileIdentifier> fileObjects = g.findBiologicalFamilyMedia(p1);
+        if (fileObjects != null) {
+            System.out.println("size = " + fileObjects.size());
+        }
+        Set<PersonIdentity> sp = new HashSet<>();
+        sp = g.descendents(p1, 6);
+
+        if (sp != null) {
+            for (PersonIdentity s : sp) {
+                System.out.println("D: "+s.getId() + "  " + s.getPersonName());
+            }
+
+        }
+        sp = g.ancestores(p1, 3);
+
+        if (sp!=null) {
+            for (PersonIdentity s : sp) {
+                System.out.println("A: "+s.getId() + "  " + s.getPersonName());
+            }
+        }
 
 
         /*find relations between two person*/
 //        Genealogy g = new Genealogy();
 //        PersonIdentity p1 = g.findPerson("A");
-//        PersonIdentity p2 = g.findPerson("B");
+//        PersonIdentity p2 = g.findPerson("K");
 //
 //        BiologicalRelation b = g.findRelation(p1,p2);
 //
@@ -83,26 +79,25 @@ public class main {
 
 
         /*Add media file-----------------------*/
-        FileIdentifier fi = new FileIdentifier();
-        fi = fi.addMediaFile("C:/Raghav123/a.txt");
-
-        System.out.println(fi.getMediaId());
-        System.out.println(fi.getFileName());
+//        FileIdentifier fi = new FileIdentifier();
+//        fi = fi.addMediaFile("C:/Raghav123/a.txt");
+//
+//        System.out.println(fi.getMediaId());
+//        System.out.println(fi.getFileName());
 
         /*Find mediaFile String*/
 
-        Genealogy g1 = new Genealogy();
-        System.out.println("Name: "+g1.findMediaFile(fi));
-
-
-        System.out.println();
+//        Genealogy g1 = new Genealogy();
+//        System.out.println("Name: "+g1.findMediaFile(fi));
+//
+//
+//        System.out.println();
 
         /*find file by filelocationwithName----------------------------------*/
 //        Genealogy gn = new Genealogy();
 //        FileIdentifier f = new FileIdentifier();
 //        f = gn.findMediaFile("Dublin2");
-//        System.out.println("Id: "+f.getMediaId());
-
+//        System.out.println(gn.findMediaFile(f));
 //        System.out.println(f.getMediaId() + f.getFileName() + f.getLocation() + f.getDate());
 
         /*Add media tags-------------------------*/

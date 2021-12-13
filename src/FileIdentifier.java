@@ -219,7 +219,6 @@ public class FileIdentifier {
             return false;
         }
 
-
         createConnection conn = new createConnection();
         ResultSet resultSet = null;
 
