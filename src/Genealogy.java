@@ -142,8 +142,7 @@ public class Genealogy {
     }
 
     /*This method fetches the media ID from the given media object and checks the media_archieve table for getting the media filename */
-    String findMediaFile( FileIdentifier fileId )
-    {
+    String findMediaFile(FileIdentifier fileId) {
         /*validating the object for null value*/
         if (fileId != null) {
             Connection connect = null;
@@ -161,8 +160,7 @@ public class Genealogy {
 
                     /*if record found then it will fetch the value from column filename and return the value*/
                     return resultSet.getString("filename");
-                }
-                else {
+                } else {
 
                     /*if no record found then the method will return null with a user facing message*/
                     System.out.println("Name not found in records");
@@ -179,7 +177,11 @@ public class Genealogy {
         }
     }
 
+    /*this method returns details of all media files which has the given tag value*/
+    /*If dates are null then it returns all matching records without considering dates*/
+    /*It returns media objects in set*/
     Set<FileIdentifier> findMediaByTag(String tag, String startDate, String endDate) {
+
         /*Validating tag for null or empty value*/
         if (tag == null) {
             System.out.println("Provided tag value is null");
@@ -188,6 +190,7 @@ public class Genealogy {
             System.out.println("Provided tag value is empty");
             return null;
         }
+
         Connection connect = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -199,24 +202,49 @@ public class Genealogy {
 
             String findmediabytags = "";
 
+            /*validating dates*/
+            /*Validating Start date and end Date*/
+            Boolean bothDatesAreFine = true;
             if (startDate == null || endDate == null) {
-                findmediabytags = "select * from media_archieve where mediaId in (select mediaId from media_tags where tag = '" + tag + "');";
-            } else if (startDate.trim().length() != 0 || endDate.trim().length() != 0) {
+                bothDatesAreFine = false;
+            } else if (startDate.trim().length() == 0 || endDate.trim().length() == 0) {
+                bothDatesAreFine = false;
+            }
+
+            if (bothDatesAreFine) {
                 findmediabytags = "select * from media_archieve where date between '" + startDate + "' and '" + endDate + "' " +
                         "and mediaId in (select mediaId from media_tags where tag='" + tag + "');";
+                System.out.println(findmediabytags);
+
+            } else {
+                findmediabytags = "select * from media_archieve where mediaId in (select mediaId from media_tags where tag = '" + tag + "');";
+                System.out.println(findmediabytags);
             }
+
+            /*List to add media Ids*/
+            List<String> mediaId = new ArrayList<>();
 
             resultSet = statement.executeQuery(findmediabytags);
 
-            List<String> mediaId = new ArrayList<>();
+            /*Adding all the media Ids into list one by one*/
             while (resultSet.next()) {
                 mediaId.add(resultSet.getString("mediaId"));
             }
 
+            /*if no media found, then list size will be 0*/
+            if(mediaId.size()==0)
+            {
+                System.out.println("No media found based on the given tag value");
+                return new HashSet<FileIdentifier>();
+            }
+
+            /*set to store media objects and return it*/
             Set<FileIdentifier> mediaFileset = new HashSet<>();
             for (int i = 0; i < mediaId.size(); i++) {
                 FileIdentifier f = new FileIdentifier();
                 resultSet = statement.executeQuery("select * from media_archieve where mediaId='" + mediaId.get(i) + "';");
+
+                /*Fecthing each column value and storing it into new objects*/
                 while (resultSet.next()) {
                     f.setMediaId(resultSet.getString("mediaId"));
                     f.setLocation(resultSet.getString("location"));
@@ -228,14 +256,18 @@ public class Genealogy {
             statement.close();
             connect.close();
             return mediaFileset;
-        } catch (
-                SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            System.out.println("Unable to find media files. Please try again");
             return null;
         }
     }
 
+
+    /*this method returns details of all media files which has the given location value*/
+    /*If dates are null then it returns all matching records without considering dates*/
+    /*It returns media objects in set*/
     Set<FileIdentifier> findMediaByLocation(String location, String startDate, String endDate) {
+
         /*Validating Location for null or empty value*/
         if (location == null) {
             System.out.println("Provided location value is null");
@@ -263,13 +295,23 @@ public class Genealogy {
 
             String findmediabyLocation = "";
 
+            /*validating dates*/
+            /*Validating Start date and end Date*/
+            Boolean bothDatesAreFine = true;
             if (startDate == null || endDate == null) {
-                findmediabyLocation = "select * from media_archieve where location = '" + location + "';";
-                System.out.println(findmediabyLocation);
-            } else if (startDate.trim().length() != 0 || endDate.trim().length() != 0) {
+                bothDatesAreFine = false;
+            } else if (startDate.trim().length() == 0 || endDate.trim().length() == 0) {
+                bothDatesAreFine = false;
+            }
+
+            if (bothDatesAreFine) {
                 findmediabyLocation = "select * from media_archieve where date between '" + startDate + "' and '" + endDate + "' " +
                         "and location='" + location + "';";
-                System.out.println(findmediabyLocation);
+
+
+            } else {
+                findmediabyLocation = "select * from media_archieve where location = '" + location + "';";
+
             }
 
             resultSet = statement.executeQuery(findmediabyLocation);
@@ -277,6 +319,12 @@ public class Genealogy {
             List<String> mediaId = new ArrayList<>();
             while (resultSet.next()) {
                 mediaId.add(resultSet.getString("mediaId"));
+            }
+
+            if (mediaId.size()==0)
+            {
+                System.out.println("No media record found based on given location");
+                return new HashSet<FileIdentifier>();
             }
 
             Set<FileIdentifier> mediaFileset = new HashSet<>();
@@ -301,16 +349,19 @@ public class Genealogy {
         }
     }
 
+    /*this method returns the list of media files which includes the given set of people*/
     List<FileIdentifier> findIndividualsMedia(Set<PersonIdentity> people, String startDate, String endDate) {
 
+        /*Validating people Set for null value*/
         if (people == null) {
             System.out.println("Provided set of people is null");
             return null;
-        } else if (people.size() == 0) {
+        }
+        /*if not null, then checking if its empty*/
+        else if (people.size() == 0) {
             System.out.println("Provided set of people is empty");
             return null;
         }
-
         Connection connect = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -321,7 +372,7 @@ public class Genealogy {
             statement = connect.createStatement();
             statement.executeQuery("use " + conn.databaseName);
 
-            /*extracting personId and putting it in seperate array*/
+            /*extracting personId and putting it in seperate string*/
             String s = "";
             for (PersonIdentity p : people) {
                 s = s + "'" + p.getId() + "',";
@@ -336,25 +387,18 @@ public class Genealogy {
                 return null;
             }
 
-
+            /*Query to gegt all the media files which are linking to the given set of people*/
             String findMediaIdbyPeople = "select mediaId from person_in_media where person in (" + s + ") group by mediaId;";
-            //System.out.println(findMediaIdbyPeople);
+
 
             /*getting all mediaIds*/
             List<String> finalMediaIds = new ArrayList<>();
             resultSet = statement.executeQuery(findMediaIdbyPeople);
 
+            /*storing all mediaIds in a arrraylist*/
             while (resultSet.next()) {
                 //System.out.println("MediaId = " + resultSet.getString("mediaId"));
                 finalMediaIds.add(resultSet.getString("mediaId"));
-            }
-
-            /*Validating Start date and end Date*/
-            Boolean datesAreFine = true;
-            if (startDate == null || endDate == null) {
-                datesAreFine = false;
-            } else if (startDate.trim().length() == 0 || endDate.trim().length() == 0) {
-                datesAreFine = false;
             }
 
             List<FileIdentifier> mediaFilesObject = new ArrayList<>();
@@ -371,9 +415,15 @@ public class Genealogy {
                 connect.close();
                 return null;
             }
+            /*Validating Start date and end Date*/
+            Boolean bothDatesAreFine = true;
+            if (startDate == null || endDate == null) {
+                bothDatesAreFine = false;
+            } else if (startDate.trim().length() == 0 || endDate.trim().length() == 0) {
+                bothDatesAreFine = false;
+            }
 
-
-            if (datesAreFine) {
+            if (bothDatesAreFine) {
                 findMediaDetails = "select * from media_archieve where mediaId in (" + ss + ") " +
                         "and date between '" + startDate + "' and '" + endDate + "' order by filename asc;";
                 System.out.println(findMediaDetails);
@@ -396,7 +446,7 @@ public class Genealogy {
 
             /*Suppose if both the dates are valid and datesAreFine = true. So now it will add the filenames with null in the list as well*/
 
-            if (datesAreFine) {
+            if (bothDatesAreFine) {
                 resultSet = statement.executeQuery("select * from media_archieve where date IS NULL order by filename asc;");
                 while (resultSet.next()) {
                     FileIdentifier f = new FileIdentifier();
@@ -419,8 +469,10 @@ public class Genealogy {
 
     }
 
+    /*this method gives a list containing notes and references for a given person*/
     List<String> notesAndReferences(PersonIdentity person) {
 
+        /*validating person object for null value*/
         if (person == null) {
             System.out.println("Provided person object is null");
             return null;
@@ -437,29 +489,35 @@ public class Genealogy {
             statement.executeQuery("use " + conn.databaseName);
             resultSet = statement.executeQuery("select * from person where p_id='" + person.getId() + "';");
 
+            /*validating person with the person table */
             if (resultSet.next() == false) {
                 return null;
             }
 
+            /*A list to store notes and reference in the list*/
             List<String> notesandRef = new ArrayList<>();
 
-            /*Fetch Notes*/
+            /*Fetch Notes for the given person in the same order in which they were entered in DB*/
             String fetchNotes = "SELECT * FROM person_notes where p_id = '" + person.getId() + "' order by noteid asc";
             resultSet = statement.executeQuery(fetchNotes);
+
+            /*storing notes in the list*/
             while (resultSet.next()) {
                 notesandRef.add(resultSet.getString("notes"));
             }
 
-            /*Fetch References*/
+            /*Fetch References for the given person in the same order in which they were entered in DB*/
             String fetchRef = "select * from person_references where p_id = '" + person.getId() + "' order by referenceid asc;";
             resultSet = null;
             resultSet = statement.executeQuery(fetchRef);
+
+            /*storing references in the list*/
             while (resultSet.next()) {
                 notesandRef.add(resultSet.getString("references"));
             }
             return notesandRef;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Unable to fetch notes and references. Please try again");
             return null;
         }
     }
@@ -498,8 +556,7 @@ public class Genealogy {
                 listOfChildern.add(pr);
             }
 
-            if (listOfChildern.size()==0)
-            {
+            if (listOfChildern.size() == 0) {
                 System.out.println("No children recorded for the given person");
                 return null;
             }
@@ -560,7 +617,7 @@ public class Genealogy {
                     "union all\n" +
                     "select d.parentid, s.childid, d.lvl + 1\n" +
                     "from descendants d join parentchild_relation  s on d.descendant = s.parentid) \n" +
-                    "select * from descendants where lvl < '" + (generations+1) + "' order by lvl asc;";
+                    "select * from descendants where lvl < '" + (generations + 1) + "' order by lvl asc;";
 
             resultSet = statement.executeQuery(finddescendents);
 
@@ -571,10 +628,18 @@ public class Genealogy {
                 finalDecendantsId.add(resultSet.getString("descendant"));
             }
 
+            /*If no decendants found, then list will be empty*/
+            if (finalDecendantsId.size() == 0) {
+                System.out.println("No decendants found for given person");
+                return new HashSet<PersonIdentity>();
+            }
+
             String s = "";
             for (String p : finalDecendantsId) {
                 s = s + "'" + p + "',";
             }
+
+            /*creating a string like ('id1','id2','id3') so that it can be used in the query*/
             if (s.length() > 1) {
                 s = s.substring(0, s.length() - 1);
             } else {
@@ -582,12 +647,13 @@ public class Genealogy {
                 connect.close();
                 return null;
             }
-
+            /*query to find person details for all the decendants found*/
             String fetchDecedantsData = "select * from person where p_id in (" + s + ");";
             System.out.println(fetchDecedantsData);
 
             resultSet = statement.executeQuery(fetchDecedantsData);
 
+            /*Set to store person objects*/
             Set<PersonIdentity> descedantsSet = new HashSet<>();
 
             while (resultSet.next()) {
@@ -611,11 +677,16 @@ public class Genealogy {
         }
     }
 
+    /*the method returns a set of person object which are ancestors of the given person till the given number of generation*/
     Set<PersonIdentity> ancestores(PersonIdentity person, Integer generations) {
+
+        /*validating person object for null value*/
         if (person == null) {
             System.out.println("Provided person object is null");
             return null;
         }
+
+        /*validating generations for invalid value*/
         if (generations <= 0) {
             System.out.println("Number of generation is invalid");
             return null;
@@ -659,23 +730,33 @@ public class Genealogy {
                 finalancestoresId.add(resultSet.getString("ancestor"));
             }
 
+            /*If no ancestors found, then list will be empty*/
+            if (finalancestoresId.size() == 0) {
+                System.out.println("No ancestors found for given person");
+                return new HashSet<PersonIdentity>();
+            }
+
             String s = "";
             for (String p : finalancestoresId) {
                 s = s + "'" + p + "',";
             }
+
+            /*creating a string like ('id1','id2','id3') so that it can be used in the query*/
             if (s.length() > 1) {
                 s = s.substring(0, s.length() - 1);
             } else {
+
                 statement.close();
                 connect.close();
                 return null;
             }
 
+            /*query to find person details for all the ancestors found*/
             String fetchancestoresData = "select * from person where p_id in (" + s + ");";
-            System.out.println(fetchancestoresData);
 
             resultSet = statement.executeQuery(fetchancestoresData);
 
+            /*Set to store person objects*/
             Set<PersonIdentity> ancestoresSet = new HashSet<>();
 
             while (resultSet.next()) {
@@ -694,7 +775,7 @@ public class Genealogy {
             connect.close();
             return ancestoresSet;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Unable to find ancestors. Please try again");
             return null;
         }
     }
@@ -716,8 +797,7 @@ public class Genealogy {
         }
 
         /*Checking if person1 and person2 are same*/
-        if (Objects.equals(person1.getId(), person2.getId()))
-        {
+        if (Objects.equals(person1.getId(), person2.getId())) {
             System.out.println("Given person1 and person2 are same. Please try again with correct arguments.");
             return null;
         }

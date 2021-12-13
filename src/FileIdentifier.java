@@ -213,6 +213,12 @@ public class FileIdentifier {
             return false;
         }
 
+        if (people==null)
+        {
+            System.out.println("Provided person list is null");
+            return false;
+        }
+
         if (people.size()==0)
         {
             System.out.println("Provided person list is empty");
@@ -240,7 +246,6 @@ public class FileIdentifier {
 
             /*check of list of people mentioned are known to database*/
             List<PersonIdentity> newpeople = new ArrayList<>();
-            String checkpeople = "";
 
             /*this loop will filter the people who are not know to database*/
             /*the list newpeople will have the final list of people who will go ahead*/
