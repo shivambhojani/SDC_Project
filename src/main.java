@@ -4,6 +4,10 @@ import java.util.*;
 public class main {
     public static void main(String[] args) {
 
+        Date d1 = new Date(2000, 11, 21);
+        System.out.println(d1.getMonth());
+
+
         /*findName--------------*/
 //        Genealogy g = new Genealogy();
 //        PersonIdentity pp = g.findPerson("Shivam5");
@@ -37,14 +41,14 @@ public class main {
 
 
         /*find relations between two person*/
-        Genealogy g = new Genealogy();
-        PersonIdentity p1 = g.findPerson("A");
-        PersonIdentity p2 = g.findPerson("B");
-
-        BiologicalRelation b = g.findRelation(p1,p2);
-
-        System.out.println("Removal: "+b.getRemoval());
-        System.out.println("CousinShip:" + b.getCousinship());
+//        Genealogy g = new Genealogy();
+//        PersonIdentity p1 = g.findPerson("A");
+//        PersonIdentity p2 = g.findPerson("B");
+//
+//        BiologicalRelation b = g.findRelation(p1,p2);
+//
+//        System.out.println("Removal: "+b.getRemoval());
+//        System.out.println("CousinShip:" + b.getCousinship());
 
 
         /*find individual in media----------------*/

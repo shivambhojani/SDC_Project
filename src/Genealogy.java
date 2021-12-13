@@ -70,7 +70,7 @@ public class Genealogy {
                 }
             } catch (SQLException e) {
                 System.out.println("Unable to fetch name. Please try again");
-                return "";
+                return null;
             }
 
         } else {
