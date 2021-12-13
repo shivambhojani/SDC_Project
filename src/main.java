@@ -83,11 +83,19 @@ public class main {
 
 
         /*Add media file-----------------------*/
-//        FileIdentifier fi = new FileIdentifier();
-//        fi = fi.addMediaFile("C:/Shivam/a.txt");
-//
-//        System.out.println(fi.getMediaId());
-//        System.out.println(fi.getFileName());
+        FileIdentifier fi = new FileIdentifier();
+        fi = fi.addMediaFile("C:/Raghav123/a.txt");
+
+        System.out.println(fi.getMediaId());
+        System.out.println(fi.getFileName());
+
+        /*Find mediaFile String*/
+
+        Genealogy g1 = new Genealogy();
+        System.out.println("Name: "+g1.findMediaFile(fi));
+
+
+        System.out.println();
 
         /*find file by filelocationwithName----------------------------------*/
 //        Genealogy gn = new Genealogy();

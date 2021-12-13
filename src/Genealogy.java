@@ -133,6 +133,37 @@ public class Genealogy {
 
     }
 
+    String findMediaFile( FileIdentifier fileId )
+    {
+        if (fileId != null) {
+            Connection connect = null;
+            Statement statement = null;
+            ResultSet resultSet = null;
+            createConnection conn = new createConnection();
+            try {
+                connect = conn.startConnection();
+                statement = connect.createStatement();
+                statement.executeQuery("use " + conn.databaseName);
+
+                resultSet = statement.executeQuery("select * from media_archieve where mediaId = '" + fileId.getMediaId() + "';");
+                if (resultSet.next()) {
+                    return resultSet.getString("filename");
+                } else {
+                    System.out.println("Name not found in records");
+                    return "";
+                }
+            } catch (SQLException e) {
+                System.out.println("Unable to fetch filename. Please try again");
+                return null;
+            }
+
+        } else {
+            System.out.println("Provided person object is null");
+            return null;
+        }
+    }
+
+
     Set<FileIdentifier> findMediaByTag(String tag, String startDate, String endDate) {
         /*Validating tag for null or empty value*/
         if (tag == null) {
