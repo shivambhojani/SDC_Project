@@ -613,13 +613,15 @@ public class Genealogy {
             //2. https://www.sqlservertutorial.net/sql-server-basics/sql-server-recursive-cte/
 
 
-            String finddescendents = "with RECURSIVE descendants (parentid, descendant, lvl) as \n" +
-                    "( select parentid, childid, 1 from parentchild_relation where parentid='" + person.getId() + "'\n" +
-                    "union all\n" +
-                    "select d.parentid, s.childid, d.lvl + 1\n" +
-                    "from descendants d join parentchild_relation  s on d.descendant = s.parentid) \n" +
+            String finddescendents = "with RECURSIVE descendants (parentid, descendant, lvl) as" +
+                    "( select parentid, childid, 1 from parentchild_relation where parentid='" + person.getId() + "'" +
+                    "union all " +
+                    "select d.parentid, s.childid, d.lvl + 1 " +
+                    "from descendants d join parentchild_relation  s on d.descendant = s.parentid) " +
                     "select * from descendants where lvl < '" + (generations + 1) + "' order by lvl asc;";
+            ;
 
+            System.out.println(finddescendents);
             resultSet = statement.executeQuery(finddescendents);
 
             /*Putting all person id in one arraylist*/

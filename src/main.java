@@ -20,42 +20,46 @@ public class main {
 
         /*findBiologicalFamilyMedia------------*/
         Genealogy g = new Genealogy();
-        PersonIdentity p1 = g.findPerson("E");
+        PersonIdentity p1 = g.findPerson("J");
 
         List<FileIdentifier> fileObjects = g.findBiologicalFamilyMedia(p1);
         if (fileObjects != null) {
             System.out.println("size = " + fileObjects.size());
         }
+        for (int i = 0; i < fileObjects.size(); i++) {
+            System.out.println(fileObjects.get(i).getMediaId());
+
+        }
         Set<PersonIdentity> sp = new HashSet<>();
-        sp = g.descendents(p1, 6);
+        sp = g.descendents(p1, 4);
 
         if (sp != null) {
             for (PersonIdentity s : sp) {
-                System.out.println("D: "+s.getId() + "  " + s.getPersonName());
+                System.out.println("D: " + s.getId() + "  " + s.getPersonName());
             }
 
-        }
-        sp = g.ancestores(p1, 3);
 
-        if (sp!=null) {
-            for (PersonIdentity s : sp) {
-                System.out.println("A: "+s.getId() + "  " + s.getPersonName());
+            sp = g.ancestores(p1, 3);
+
+            if (sp != null) {
+                for (PersonIdentity s : sp) {
+                    System.out.println("A: " + s.getId() + "  " + s.getPersonName());
+                }
             }
-        }
 
 
-        /*find relations between two person*/
-//        Genealogy g = new Genealogy();
-//        PersonIdentity p1 = g.findPerson("A");
-//        PersonIdentity p2 = g.findPerson("K");
-//
-//        BiologicalRelation b = g.findRelation(p1,p2);
-//
-//        System.out.println("Removal: "+b.getRemoval());
-//        System.out.println("CousinShip:" + b.getCousinship());
+            /*find relations between two person*/
+        Genealogy g1 = new Genealogy();
+        PersonIdentity p11 = g1.findPerson("A");
+        PersonIdentity p2 = g1.findPerson("K");
+
+        BiologicalRelation b = g1.findRelation(p11,p2);
+
+        System.out.println("Removal: "+b.getRemoval());
+        System.out.println("CousinShip:" + b.getCousinship());
 
 
-        /*find individual in media----------------*/
+            /*find individual in media----------------*/
 
 //        Genealogy gene = new Genealogy();
 //        PersonIdentity p1 = gene.findPerson("Ben");
@@ -70,7 +74,7 @@ public class main {
 //        {
 //            System.out.println("--" + ff.getMediaId() +" " + ff.getFileName() + " " + ff.getDate());
 //        }
-        /*ADD PERSON--------------------------------------------------*/
+            /*ADD PERSON--------------------------------------------------*/
 //        PersonIdentity person1 = new PersonIdentity();
 //        PersonIdentity person2 = new PersonIdentity();
 //        person1.addPerson("Kandarp");
@@ -86,7 +90,7 @@ public class main {
 //        person4 = person4.addPerson("person4");
 
 
-        /*Add media file-----------------------*/
+            /*Add media file-----------------------*/
 //        FileIdentifier fi = new FileIdentifier();
 //        fi = fi.addMediaFile("Image1");
 //        fi = fi.addMediaFile("Image2");
@@ -96,7 +100,7 @@ public class main {
 //        System.out.println("New File: "+fi.getMediaId());
 //        System.out.println("New File: "+fi.getFileName());
 
-        /*Find mediaFile String*/
+            /*Find mediaFile String*/
 
 //        Genealogy g1 = new Genealogy();
 //        System.out.println("Name: "+g1.findMediaFile(fi));
@@ -104,18 +108,18 @@ public class main {
 //
 //        System.out.println();
 
-        /*find file by filelocationwithName----------------------------------*/
+            /*find file by filelocationwithName----------------------------------*/
 //        Genealogy gn = new Genealogy();
 //        FileIdentifier f = new FileIdentifier();
 //        f = gn.findMediaFile("Image1");
 //        System.out.println(gn.findMediaFile(f));
 //        System.out.println(f.getMediaId() + f.getFileName() + f.getLocation() + f.getDate());
 
-        /*Add media tags-------------------------*/
+            /*Add media tags-------------------------*/
 //        FileIdentifier fid = new FileIdentifier();
 //        fid.tagMedia(f,"Test tag");
 
-        /*Add media attributes-------------*/
+            /*Add media attributes-------------*/
 //        Genealogy gn = new Genealogy();
 //        FileIdentifier f = gn.findMediaFile("Image4");
 //
@@ -124,7 +128,7 @@ public class main {
 //        mediaMap.put("location", "Halifax");
 //        f.recordMediaAttributes(f, mediaMap);
 
-        /*Add people in media*/
+            /*Add people in media*/
 //        List<PersonIdentity> people = new ArrayList<>();
 //        Genealogy g = new Genealogy();
 //        PersonIdentity p1 = g.findPerson("Ben");
@@ -138,18 +142,21 @@ public class main {
 //        FileIdentify.peopleInMedia(FileIdentify, people);
 
 
-        /*Find media by location*/
-        Genealogy ggn = new Genealogy();
+            /*Find media by location*/
+//    Genealogy ggn = new Genealogy();
+//
+//    Set<FileIdentifier> s = new HashSet<>();
+//    s=ggn.findMediaByLocation("Halifax","","1960-12-12");
+//
+//        for(
+//    FileIdentifier file:s)
+//
+//    {
+//        System.out.println(file.getMediaId());
+//    }
 
-        Set<FileIdentifier> s = new HashSet<>();
-        s = ggn.findMediaByLocation("Halifax", "", "1960-12-12");
 
-        for (FileIdentifier file : s) {
-            System.out.println(file.getMediaId());
-        }
-
-
-        /*findmedia by tag*/
+            /*findmedia by tag*/
 //        Genealogy ggn = new Genealogy();
 //
 //        Set<FileIdentifier> s = new HashSet<>();
@@ -161,7 +168,7 @@ public class main {
 //            System.out.println(file.getLocation());
 //        }
 
-        /*Get notes and reference*/
+            /*Get notes and reference*/
 //        Genealogy gen = new Genealogy();
 //        PersonIdentity p = gen.findPerson("Shivam Bhojani");
 //
@@ -173,8 +180,8 @@ public class main {
 //            System.out.println(a);
 //        }
 
-        /*FIND PERSON AND RECORD ATTRIBUTES---------------------------*/
-        System.out.println("############################3");
+            /*FIND PERSON AND RECORD ATTRIBUTES---------------------------*/
+
 //        Genealogy g = new Genealogy();
 //        PersonIdentity p1 = g.findPerson("Shivam");
 //
@@ -197,7 +204,7 @@ public class main {
 //        m.put("gender", "female");
 //        m.put("occupation", "Sales Manager");
 
-       // System.out.println(p1.recordAttributes(p1, m));
+            // System.out.println(p1.recordAttributes(p1, m));
 //
 //
 //        System.out.println(record.recordAttributes(p1, m));
@@ -205,20 +212,17 @@ public class main {
 //        System.out.println(record.recordAttributes(p3, m));
 //        System.out.println(record.recordAttributes(p4, m));
 
-        /*RECORD CHILD------------------------------------*/
-//        Genealogy g3 = new Genealogy();
-//        PersonIdentity person3 = g3.findPerson("Kandarp");
-//        PersonIdentity person4 = g3.findPerson("Meghna");
+            /*RECORD CHILD------------------------------------*/
+//            Genealogy g3 = new Genealogy();
+//            PersonIdentity person3 = g3.findPerson("L");
+//            PersonIdentity person4 = g3.findPerson("K");
 //
-//        person3 = null;
-//
-//        PersonIdentity person5 = g3.findPerson("person3");
-//        BiologicalRelation br = new BiologicalRelation();
-//        System.out.println(br.recordChild(person3, person4));
-//        System.out.println(br.recordChild(person4, person5));
+//            BiologicalRelation br = new BiologicalRelation();
+//            System.out.println(br.recordChild(person3, person4));
+            //System.out.println(br.recordChild(person4, person5));
 
 
-        /*Record references and notes---------------------------*/
+            /*Record references and notes---------------------------*/
 //        Genealogy g4 = new Genealogy();
 //        PersonIdentity person5 = g4.findPerson("Shivam");
 //        System.out.println(person5.recordReference(person5,"Rajkot"));
@@ -226,7 +230,7 @@ public class main {
 //        System.out.println(person5.recordNote(person5,"Note 1"));
 
 
-        /*Add Relations between two perso */
+            /*Add Relations between two perso */
 //        Genealogy gg = new Genealogy();
 //        PersonIdentity person3 = g3.findPerson("Kandarp");
 //        PersonIdentity person4 = g3.findPerson("Rachel");
@@ -236,10 +240,17 @@ public class main {
 //        System.out.println(br.recordPartnering(person3, person4));
 
 
-        /*Dissolution*/
+            /*Dissolution*/
 
 //        BiologicalRelation brrr = new BiologicalRelation();
 //        System.out.println(brrr.recordDissolution(person3,person4));
 //        System.out.println(brrr.recordDissolution(person3,person5));
+
+        }
     }
 }
+
+
+
+
+
