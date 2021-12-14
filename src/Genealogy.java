@@ -27,11 +27,7 @@ public class Genealogy {
             if (resultSet.next()) {
                 p.setId(resultSet.getString("p_id"));
                 p.setPersonName(resultSet.getString("name"));
-                p.setDob(resultSet.getString("dob"));
-                p.setbLocation(resultSet.getString("bLocation"));
-                p.setDod(resultSet.getString("dod"));
-                p.setdLocation(resultSet.getString("dLocation"));
-                p.setOccupation(resultSet.getString("occupation"));
+
                 statement.close();
                 resultSet.close();
                 connect.close();
@@ -118,7 +114,6 @@ public class Genealogy {
                 FileIdentifier f = new FileIdentifier();
                 f.setMediaId(resultSet.getString("mediaId"));
                 f.setFileName(resultSet.getString("filename"));
-                f.setLocation(resultSet.getString("location"));
                 f.setLocation(resultSet.getString("date"));
                 statement.close();
                 resultSet.close();
@@ -246,7 +241,6 @@ public class Genealogy {
                 /*Fecthing each column value and storing it into new objects*/
                 while (resultSet.next()) {
                     f.setMediaId(resultSet.getString("mediaId"));
-                    f.setLocation(resultSet.getString("location"));
                     f.setFileName(resultSet.getString("filename"));
                     f.setDate(resultSet.getString("date"));
                 }
@@ -304,12 +298,15 @@ public class Genealogy {
             }
 
             if (bothDatesAreFine) {
-                findmediabyLocation = "select * from media_archieve where date between '" + startDate + "' and '" + endDate + "' " +
-                        "and location='" + location + "';";
+                findmediabyLocation = "select * from media_archieve where mediaId in (select mediaId from media_attributes \n" +
+                        "where attributeName ='location' and attributeValue='" + location + "' group by mediaId)\n" +
+                        "and date between '" + startDate + "' and '" + endDate + "';";
 
 
             } else {
-                findmediabyLocation = "select * from media_archieve where location = '" + location + "';";
+                findmediabyLocation = "select * from media_archieve " +
+                        "where mediaId in (select mediaId from media_attributes where attributeName = 'location' " +
+                        "and attributeValue='" + location + "' group by mediaId);";
 
             }
 
@@ -331,7 +328,6 @@ public class Genealogy {
                 resultSet = statement.executeQuery("select * from media_archieve where mediaId='" + mediaId.get(i) + "';");
                 while (resultSet.next()) {
                     f.setMediaId(resultSet.getString("mediaId"));
-                    f.setLocation(resultSet.getString("location"));
                     f.setFileName(resultSet.getString("filename"));
                     f.setDate(resultSet.getString("date"));
                 }
@@ -394,7 +390,6 @@ public class Genealogy {
 
             /*storing all mediaIds in a arrraylist*/
             while (resultSet.next()) {
-                //System.out.println("MediaId = " + resultSet.getString("mediaId"));
                 finalMediaIds.add(resultSet.getString("mediaId"));
             }
             if (finalMediaIds.size() == 0) {
@@ -437,7 +432,6 @@ public class Genealogy {
             while (resultSet.next()) {
                 FileIdentifier f = new FileIdentifier();
                 f.setMediaId(resultSet.getString("mediaId"));
-                f.setLocation(resultSet.getString("location"));
                 f.setFileName(resultSet.getString("filename"));
                 f.setDate(resultSet.getString("date"));
                 mediaFilesObject.add(f);
@@ -451,7 +445,6 @@ public class Genealogy {
                 while (resultSet.next()) {
                     FileIdentifier f = new FileIdentifier();
                     f.setMediaId(resultSet.getString("mediaId"));
-                    f.setLocation(resultSet.getString("location"));
                     f.setFileName(resultSet.getString("filename"));
                     f.setDate(resultSet.getString("date"));
                     mediaFilesObject.add(f);
@@ -522,9 +515,10 @@ public class Genealogy {
         }
     }
 
-    /*this method */
+    /*this method finds immediate child of the given person and gives the linked mediaId linked to it*/
     List<FileIdentifier> findBiologicalFamilyMedia(PersonIdentity person) {
 
+        /*Validating person object for null value*/
         if (person == null) {
             System.out.println("Provided person object is null");
             return null;
@@ -539,28 +533,34 @@ public class Genealogy {
             connect = conn.startConnection();
             statement = connect.createStatement();
             statement.executeQuery("use " + conn.databaseName);
+
+            /*checking of the person whether it exists in database ot not*/
             resultSet = statement.executeQuery("select * from person where p_id = '" + person.getId() + "';");
             if (resultSet.next() == false) {
                 System.out.println("Person not found in database");
                 return null;
             }
+
+            /*finding the immediate children from parentchild_relation*/
             String findChilderen = "select * from parentchild_relation where parentid = '" + person.getId() + "';";
 
             resultSet = statement.executeQuery(findChilderen);
 
             Set<PersonIdentity> listOfChildern = new HashSet<>();
 
+            /*Sotring personId for each child in a seperate list*/
             while (resultSet.next()) {
                 PersonIdentity pr = new PersonIdentity();
-                //System.out.println("Child = " +resultSet.getString("childid") );
                 pr.setId(resultSet.getString("childid"));
                 listOfChildern.add(pr);
             }
 
+            /*checking if the number of children found is zero*/
             if (listOfChildern.size() == 0) {
                 System.out.println("No children recorded for the given person");
                 return null;
             }
+            /*Calling this method to find the media objects based on the person input*/
             List<FileIdentifier> fileList = findIndividualsMedia(listOfChildern, null, null);
 
             statement.close();
@@ -661,11 +661,6 @@ public class Genealogy {
                 PersonIdentity pi = new PersonIdentity();
                 pi.setId(resultSet.getString("p_id"));
                 pi.setPersonName(resultSet.getString("name"));
-                pi.setDob(resultSet.getString("dob"));
-                pi.setbLocation(resultSet.getString("bLocation"));
-                pi.setDod(resultSet.getString("dod"));
-                pi.setdLocation(resultSet.getString("dLocation"));
-                pi.setOccupation(resultSet.getString("occupation"));
                 descedantsSet.add(pi);
             }
 
@@ -764,11 +759,6 @@ public class Genealogy {
                 PersonIdentity pi = new PersonIdentity();
                 pi.setId(resultSet.getString("p_id"));
                 pi.setPersonName(resultSet.getString("name"));
-                pi.setDob(resultSet.getString("dob"));
-                pi.setbLocation(resultSet.getString("bLocation"));
-                pi.setDod(resultSet.getString("dod"));
-                pi.setdLocation(resultSet.getString("dLocation"));
-                pi.setOccupation(resultSet.getString("occupation"));
                 ancestoresSet.add(pi);
             }
 

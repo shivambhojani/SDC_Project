@@ -54,7 +54,6 @@ public class PersonIdentity {
     }
 
     Boolean recordAttributes(PersonIdentity person, Map<String, String> attributes) {
-
         if (person == null) {
             System.out.println("Provided person object is null");
             return false;
@@ -74,12 +73,6 @@ public class PersonIdentity {
         try {
             Statement statement = connect.createStatement();
             statement.executeQuery("use " + conn.databaseName);
-            String dob;
-            String bLocation;
-            String dod;
-            String dLocation;
-            String gender;
-            String occupation;
 
             /*Checking if the given person is there in database*/
             resultSet = statement.executeQuery("select * from person where p_id = '" + person.getId() + "';");
@@ -96,87 +89,155 @@ public class PersonIdentity {
             for (Map.Entry<String, String> entry : attributes.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
-                if (Objects.equals(key, "dob")) {
-                    if (value != null) {
-                        dob = value;
-                        dateFormat df = new dateFormat();
-                        dob = df.checkDateFormat(dob);
-                        if (dob != null) {
-                            try {
-                                String updateQuery = "update person set dob='" + dob + "' where p_id='" + person.getId() + "';";
-                                statement.executeUpdate(updateQuery);
-                            } catch (Exception e) {
-                                System.out.println("Date of Birth format is wrong");
+
+                if (key != null && value != null) {
+                    if (key.trim().length() != 0 && value.trim().length() != 0) {
+                        if (key.equals("birthDate") || key.equals("deathDate")) {
+                            dateFormat df = new dateFormat();
+                            value = df.checkDateFormat(value);
+                            if (value != null) {
+                                statement.executeUpdate("insert into person_attributes values (null, '" + person.getId() + "'," +
+                                        " '" + key + "', '" + value + "');");
                             }
                         } else {
-                            System.out.println("Date of Birth format is wrong");
-                        }
-                    }
-                } else if (Objects.equals(key, "bLocation")) {
-                    if (value != null) {
-                        bLocation = value;
-                        String updateQuery = "update person set bLocation='" + bLocation + "' where p_id='" + person.getId() + "';";
-                        try {
-                            statement.executeUpdate(updateQuery);
-                        } catch (Exception e) {
-                            System.out.println("Birth location not updated");
-                        }
-                    }
-                } else if (Objects.equals(key, "dod")) {
-                    if (value != null) {
-                        dod = value;
-                        dateFormat df = new dateFormat();
-                        dod = df.checkDateFormat(dod);
-                        if (dod != null) {
-                            try {
-                                String updateQuery = "update person set dod='" + dod + "' where p_id='" + person.getId() + "';";
-                                statement.executeUpdate(updateQuery);
-                            } catch (SQLException e) {
-                                System.out.println("Date of death not updated");
-                            }
-                        }
-                    }
-                } else if (Objects.equals(key, "dLocation")) {
-                    if (value != null) {
-                        dLocation = value;
-                        String updateQuery = "update person set dLocation='" + dLocation + "' where p_id='" + person.getId() + "';";
-                        try {
-                            statement.executeUpdate(updateQuery);
-                        } catch (SQLException e) {
-                            System.out.println("Location of death not updated");
-                        }
-                    }
-                } else if (Objects.equals(key, "gender")) {
-                    if (value != null) {
-                        gender = value;
-                        String updateQuery = "update person set gender='" + gender + "' where p_id='" + person.getId() + "';";
-                        try {
-                            statement.executeUpdate(updateQuery);
-                        } catch (SQLException e) {
-                            System.out.println("Gender not updated");
-                        }
-                    }
-                } else if (Objects.equals(key, "occupation")) {
-                    if (value != null) {
-                        occupation = value;
-                        String updateQuery = "update person set occupation='" + occupation + "' where p_id='" + person.getId() + "';";
-                        try {
-                            statement.executeUpdate(updateQuery);
-                        } catch (SQLException e) {
-                            System.out.println("Occupation not updated");
+                            statement.executeUpdate("insert into person_attributes values (null, '" + person.getId() + "'," +
+                                    " '" + key + "', '" + value + "');");
                         }
                     }
                 }
             }
-            statement.close();
-            connect.close();
             return true;
         } catch (SQLException e) {
-            System.out.println("Failed to record attributes. Please try again");
+
             return false;
         }
-
     }
+
+
+//    Boolean recordAttributes(PersonIdentity person, Map<String, String> attributes) {
+//
+//        if (person == null) {
+//            System.out.println("Provided person object is null");
+//            return false;
+//        }
+//
+//        if (attributes == null) {
+//            System.out.println("Provided attributes map is null");
+//            return false;
+//        } else if (attributes.size() == 0) {
+//            System.out.println("Provided attributes map is empty");
+//            return false;
+//        }
+//
+//        createConnection conn = new createConnection();
+//        Connection connect = conn.startConnection();
+//        ResultSet resultSet = null;
+//        try {
+//            Statement statement = connect.createStatement();
+//            statement.executeQuery("use " + conn.databaseName);
+//            String dob;
+//            String bLocation;
+//            String dod;
+//            String dLocation;
+//            String gender;
+//            String occupation;
+//
+//            /*Checking if the given person is there in database*/
+//            resultSet = statement.executeQuery("select * from person where p_id = '" + person.getId() + "';");
+//
+//            if (resultSet.next() == false) {
+//                statement.close();
+//                connect.close();
+//                System.out.println("Person not found");
+//                return false;
+//            }
+//
+//            //Considering that map key names will are dob, dLocation, dod, dLocation, gender, occupation
+//
+//            for (Map.Entry<String, String> entry : attributes.entrySet()) {
+//                String key = entry.getKey();
+//                String value = entry.getValue();
+//                if (Objects.equals(key, "dob")) {
+//                    if (value != null) {
+//                        dob = value;
+//                        dateFormat df = new dateFormat();
+//                        dob = df.checkDateFormat(dob);
+//                        if (dob != null) {
+//                            try {
+//                                String updateQuery = "update person set dob='" + dob + "' where p_id='" + person.getId() + "';";
+//                                statement.executeUpdate(updateQuery);
+//                            } catch (Exception e) {
+//                                System.out.println("Date of Birth format is wrong");
+//                            }
+//                        } else {
+//                            System.out.println("Date of Birth format is wrong");
+//                        }
+//                    }
+//                } else if (Objects.equals(key, "bLocation")) {
+//                    if (value != null) {
+//                        bLocation = value;
+//                        String updateQuery = "update person set bLocation='" + bLocation + "' where p_id='" + person.getId() + "';";
+//                        try {
+//                            statement.executeUpdate(updateQuery);
+//                        } catch (Exception e) {
+//                            System.out.println("Birth location not updated");
+//                        }
+//                    }
+//                } else if (Objects.equals(key, "dod")) {
+//                    if (value != null) {
+//                        dod = value;
+//                        dateFormat df = new dateFormat();
+//                        dod = df.checkDateFormat(dod);
+//                        if (dod != null) {
+//                            try {
+//                                String updateQuery = "update person set dod='" + dod + "' where p_id='" + person.getId() + "';";
+//                                statement.executeUpdate(updateQuery);
+//                            } catch (SQLException e) {
+//                                System.out.println("Date of death not updated");
+//                            }
+//                        }
+//                    }
+//                } else if (Objects.equals(key, "dLocation")) {
+//                    if (value != null) {
+//                        dLocation = value;
+//                        String updateQuery = "update person set dLocation='" + dLocation + "' where p_id='" + person.getId() + "';";
+//                        try {
+//                            statement.executeUpdate(updateQuery);
+//                        } catch (SQLException e) {
+//                            System.out.println("Location of death not updated");
+//                        }
+//                    }
+//                } else if (Objects.equals(key, "gender")) {
+//                    if (value != null) {
+//                        gender = value;
+//                        String updateQuery = "update person set gender='" + gender + "' where p_id='" + person.getId() + "';";
+//                        try {
+//                            statement.executeUpdate(updateQuery);
+//                        } catch (SQLException e) {
+//                            System.out.println("Gender not updated");
+//                        }
+//                    }
+//                } else if (Objects.equals(key, "occupation")) {
+//                    if (value != null) {
+//                        occupation = value;
+//                        String updateQuery = "update person set occupation='" + occupation + "' where p_id='" + person.getId() + "';";
+//                        try {
+//                            statement.executeUpdate(updateQuery);
+//                        } catch (SQLException e) {
+//                            System.out.println("Occupation not updated");
+//                        }
+//                    }
+//                }
+//            }
+//            statement.close();
+//            connect.close();
+//            return true;
+//        } catch (SQLException e) {
+//            System.out.println("Failed to record attributes. Please try again");
+//            return false;
+//        }
+//
+//    }
 
     Boolean recordReference(PersonIdentity person, String reference) {
         if (person == null) {

@@ -24,16 +24,17 @@ public class BiologicalRelation {
         Removal = removal;
     }
 
+    /*this method will record child - aprent relation in parentchild_relation table */
     Boolean recordChild(PersonIdentity parent, PersonIdentity child) {
 
-        if (parent==null)
-        {
+        /*checks if parent object is null*/
+        if (parent == null) {
             System.out.println("Provided parent object is null");
             return false;
         }
 
-        if (child==null)
-        {
+        /*checks if child object is null*/
+        if (child == null) {
             System.out.println("Provided child object is null");
             return false;
         }
@@ -43,6 +44,7 @@ public class BiologicalRelation {
         if (Objects.equals(parent.getId(), child.getId())) {
             return false;
         }
+
         createConnection conn = new createConnection();
         Connection connect = conn.startConnection();
         ResultSet resultSet = null;
@@ -64,6 +66,7 @@ public class BiologicalRelation {
                 return false;
             }
 
+            /*Checks if child exists in person table*/
             resultSet2 = statement.executeQuery("select * from person where p_id='" + child.getId() + "'");
             if (resultSet2.next() == false) {
                 statement.close();
@@ -72,10 +75,13 @@ public class BiologicalRelation {
                 return false;
             }
 
+            /*checks if a record already exists where child is marked as parent and parent is marked as child*/
             resultSet = statement.executeQuery("select * from parentchild_relation where parentid='" + child.getId() + "' " +
                     "and childid='" + parent.getId() + "';");
+
             if (resultSet.next()) {
                 System.out.println("Unable to record relation. A record exists where " + child.getPersonName() + " is parent of " + parent.getPersonName());
+                return false;
             }
 
             /*Cheking if the record already exists for the given parent-child relation*/
@@ -107,14 +113,12 @@ public class BiologicalRelation {
 
     Boolean recordPartnering(PersonIdentity partner1, PersonIdentity partner2) {
 
-        if (partner1==null)
-        {
+        if (partner1 == null) {
             System.out.println("Provided parent object is null");
             return false;
         }
 
-        if (partner2==null)
-        {
+        if (partner2 == null) {
             System.out.println("Provided child object is null");
             return false;
         }
@@ -167,14 +171,12 @@ public class BiologicalRelation {
 
     Boolean recordDissolution(PersonIdentity partner1, PersonIdentity partner2) {
 
-        if (partner1==null)
-        {
+        if (partner1 == null) {
             System.out.println("Provided parent object is null");
             return false;
         }
 
-        if (partner2==null)
-        {
+        if (partner2 == null) {
             System.out.println("Provided child object is null");
             return false;
         }
@@ -214,25 +216,22 @@ public class BiologicalRelation {
 
             Boolean relationExists = false;
 
-            String checkrelation = "select * from partner_relation where partner1Id='"+partner1.getId()+"' and partner2Id='"+partner2.getId()+"';";
+            String checkrelation = "select * from partner_relation where partner1Id='" + partner1.getId() + "' and partner2Id='" + partner2.getId() + "';";
 
             resultSet1 = null;
             resultSet1 = statement.executeQuery(checkrelation);
-            if (resultSet1.next() == true)
-            {
+            if (resultSet1.next() == true) {
                 relationExists = true;
             }
 
             resultSet1 = null;
-            checkrelation = "select * from partner_relation where partner1Id='"+partner2.getId()+"' and partner2Id='"+partner1.getId()+"';";
+            checkrelation = "select * from partner_relation where partner1Id='" + partner2.getId() + "' and partner2Id='" + partner1.getId() + "';";
             resultSet1 = statement.executeQuery(checkrelation);
-            if (resultSet1.next() ==true)
-            {
+            if (resultSet1.next() == true) {
                 relationExists = true;
             }
 
-            if (relationExists == false)
-            {
+            if (relationExists == false) {
                 System.out.println("Partner 1 and Partner 2 does not have partnering history. Dissolution is not possible without partnering history.");
                 statement.close();
                 connect.close();

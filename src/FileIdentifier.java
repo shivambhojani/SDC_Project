@@ -17,13 +17,10 @@ public class FileIdentifier {
     /*this method creates new record in media archieve. It will enter filename as given by method  */
     FileIdentifier addMediaFile(String fileLocationwithName) {
 
-        if(fileLocationwithName==null)
-        {
+        if (fileLocationwithName == null) {
             System.out.println("Given filename is null");
             return null;
-        }
-        else if (fileLocationwithName.trim().length()==0)
-        {
+        } else if (fileLocationwithName.trim().length() == 0) {
             System.out.println("Given filename is empty");
             return null;
         }
@@ -50,7 +47,7 @@ public class FileIdentifier {
 
             /*If file does not exists at given location with this name then we will enter the data in media_archieve.*/
 
-            String insertQuery = "insert into media_archieve value (null, null, '" + fileLocationwithName + "', null);";
+            String insertQuery = "insert into media_archieve value (null, '" + fileLocationwithName + "', null);";
 
             /*Inserting medai record with the given filepath with filename*/
             /*Example: C:/Users/Shivam/test.png*/
@@ -78,21 +75,15 @@ public class FileIdentifier {
 
     }
 
-
-    /*this methods records attributes like location and date for a particular media file*/
     Boolean recordMediaAttributes(FileIdentifier fileIdentifier, Map<String, String> attributes) {
-        if (fileIdentifier == null)
-        {
+        if (fileIdentifier == null) {
             System.out.println("Provided file object is null");
             return false;
         }
-        if (attributes==null)
-        {
+        if (attributes == null) {
             System.out.println("Provided attributes map is null");
             return false;
-        }
-        else if (attributes.size()==0)
-        {
+        } else if (attributes.size() == 0) {
             System.out.println("Provided attributes map is empty");
             return false;
         }
@@ -104,8 +95,6 @@ public class FileIdentifier {
             Connection connect = conn.startConnection();
             Statement statement = connect.createStatement();
             statement.executeQuery("use " + conn.databaseName);
-            String date;
-            String location;
 
             /*check whether the media file exists in media_archive or not*/
             resultSet = statement.executeQuery("select * from media_archieve where mediaId = '" + fileIdentifier.getMediaId() + "';");
@@ -115,61 +104,126 @@ public class FileIdentifier {
                 connect.close();
                 return false;
             }
-
-            /*Media file is there in media archive and now the attributes will be recorded from map*/
             for (Map.Entry<String, String> entry : attributes.entrySet()) {
-
+//
                 /*this for loop will check for each expected attributes and update it in database*/
                 String key = entry.getKey();
                 String value = entry.getValue();
-                if (Objects.equals(key, "date")) {
-                    if (value != null) {
-                        date = value;
-                        dateFormat df = new dateFormat();
-                        date = df.checkDateFormat(date);
-                        if (date != null) {
-                            String updateQuery = "update media_archieve set date='" + date + "' where mediaId='" + fileIdentifier.getMediaId() + "';";
-                            try {
-                                statement.executeUpdate(updateQuery);
-                            } catch (SQLException e) {
-                                System.out.println("Problem while giving date input. Date format should be yyyy-mm-dd");
-                            }
+
+                if (key != null && value != null) {
+                    if (key.trim().length() != 0 && value.trim().length() != 0) {
+                        if (key.equals("date")) {
+                            dateFormat df = new dateFormat();
+                            value = df.checkDateFormat(value);
+                            if (value != null) {
+                                statement.executeUpdate("update media_archieve set date = '" + value + "' where mediaId = '" + fileIdentifier.getMediaId() + "';");
+                                }
+                        } else {
+                            statement.executeUpdate("insert into media_attributes values (null, '" + fileIdentifier.getMediaId() + "'," +
+                                    " '" + key + "', '" + value + "');");
                         }
                     }
-                } else if (Objects.equals(key, "location")) {
-                    if (value != null) {
-                        location = value;
-                        String updateQuery = "update media_archieve set location='" + location + "' where mediaId='" + fileIdentifier.getMediaId() + "';";
-                        statement.executeUpdate(updateQuery);
-                    }
                 }
-
             }
-            statement.close();
-            connect.close();
             return true;
-        } catch (SQLException e) {
-            System.out.println("Unable to update attributes in database. Please try again.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Unable to add attributes. Please try again");
             return false;
         }
+
     }
+
+
+
+
+    /*this methods records attributes like location and date for a particular media file*/
+//    Boolean recordMediaAttributes(FileIdentifier fileIdentifier, Map<String, String> attributes) {
+//        if (fileIdentifier == null)
+//        {
+//            System.out.println("Provided file object is null");
+//            return false;
+//        }
+//        if (attributes==null)
+//        {
+//            System.out.println("Provided attributes map is null");
+//            return false;
+//        }
+//        else if (attributes.size()==0)
+//        {
+//            System.out.println("Provided attributes map is empty");
+//            return false;
+//        }
+//
+//        createConnection conn = new createConnection();
+//        ResultSet resultSet = null;
+//
+//        try {
+//            Connection connect = conn.startConnection();
+//            Statement statement = connect.createStatement();
+//            statement.executeQuery("use " + conn.databaseName);
+//            String date;
+//            String location;
+//
+//            /*check whether the media file exists in media_archive or not*/
+//            resultSet = statement.executeQuery("select * from media_archieve where mediaId = '" + fileIdentifier.getMediaId() + "';");
+//            if (resultSet.next() == false) {
+//                System.out.println("Given media file does not exists in database");
+//                statement.close();
+//                connect.close();
+//                return false;
+//            }
+//
+//            /*Media file is there in media archive and now the attributes will be recorded from map*/
+//            for (Map.Entry<String, String> entry : attributes.entrySet()) {
+//
+//                /*this for loop will check for each expected attributes and update it in database*/
+//                String key = entry.getKey();
+//                String value = entry.getValue();
+//                if (Objects.equals(key, "date")) {
+//                    if (value != null) {
+//                        date = value;
+//                        dateFormat df = new dateFormat();
+//                        date = df.checkDateFormat(date);
+//                        if (date != null) {
+//                            String updateQuery = "update media_archieve set date='" + date + "' where mediaId='" + fileIdentifier.getMediaId() + "';";
+//                            try {
+//                                statement.executeUpdate(updateQuery);
+//                            } catch (SQLException e) {
+//                                System.out.println("Problem while giving date input. Date format should be yyyy-mm-dd");
+//                            }
+//                        }
+//                    }
+//                } else if (Objects.equals(key, "location")) {
+//                    if (value != null) {
+//                        location = value;
+//                        String updateQuery = "update media_archieve set location='" + location + "' where mediaId='" + fileIdentifier.getMediaId() + "';";
+//                        statement.executeUpdate(updateQuery);
+//                    }
+//                }
+//
+//            }
+//            statement.close();
+//            connect.close();
+//            return true;
+//        } catch (SQLException e) {
+//            System.out.println("Unable to update attributes in database. Please try again.");
+//            return false;
+//        }
+//    }
 
     /*this method will add tags to the given media object*/
     /*the data will be recorded to media_tags*/
     Boolean tagMedia(FileIdentifier fileIdentifier, String tag) {
-        if (fileIdentifier == null)
-        {
+        if (fileIdentifier == null) {
             System.out.println("Provided file object is null");
             return false;
         }
 
-        if(tag==null)
-        {
+        if (tag == null) {
             System.out.println("Given tag is null");
             return false;
-        }
-        else if (tag.trim().length()==0)
-        {
+        } else if (tag.trim().length() == 0) {
             System.out.println("Given tag is empty");
             return false;
         }
@@ -211,20 +265,17 @@ public class FileIdentifier {
     /*this method will validate the media ID and all the person in media, before entering that into table*/
     /*this method will also validation the existing record in people in media and eliminate duplicate records */
     Boolean peopleInMedia(FileIdentifier fileIdentifier, List<PersonIdentity> people) {
-        if (fileIdentifier == null)
-        {
+        if (fileIdentifier == null) {
             System.out.println("Provided file object is null");
             return false;
         }
 
-        if (people==null)
-        {
+        if (people == null) {
             System.out.println("Provided person list is null");
             return false;
         }
 
-        if (people.size()==0)
-        {
+        if (people.size() == 0) {
             System.out.println("Provided person list is empty");
             return false;
         }
