@@ -55,19 +55,15 @@ public class PersonIdentity {
 
     Boolean recordAttributes(PersonIdentity person, Map<String, String> attributes) {
 
-        if (person == null)
-        {
+        if (person == null) {
             System.out.println("Provided person object is null");
             return false;
         }
 
-        if (attributes==null)
-        {
+        if (attributes == null) {
             System.out.println("Provided attributes map is null");
             return false;
-        }
-        else if (attributes.size()==0)
-        {
+        } else if (attributes.size() == 0) {
             System.out.println("Provided attributes map is empty");
             return false;
         }
@@ -86,10 +82,9 @@ public class PersonIdentity {
             String occupation;
 
             /*Checking if the given person is there in database*/
-            resultSet = statement.executeQuery("select * from person where p_id = '"+person.getId()+"';");
+            resultSet = statement.executeQuery("select * from person where p_id = '" + person.getId() + "';");
 
-            if (resultSet.next()==false)
-            {
+            if (resultSet.next() == false) {
                 statement.close();
                 connect.close();
                 System.out.println("Person not found");
@@ -104,10 +99,16 @@ public class PersonIdentity {
                 if (Objects.equals(key, "dob")) {
                     if (value != null) {
                         dob = value;
-                        String updateQuery = "update person set dob='" + dob + "' where p_id='" + person.getId() + "';";
-                        try {
-                            statement.executeUpdate(updateQuery);
-                        } catch (Exception e) {
+                        dateFormat df = new dateFormat();
+                        dob = df.checkDateFormat(dob);
+                        if (dob != null) {
+                            try {
+                                String updateQuery = "update person set dob='" + dob + "' where p_id='" + person.getId() + "';";
+                                statement.executeUpdate(updateQuery);
+                            } catch (Exception e) {
+                                System.out.println("Date of Birth format is wrong");
+                            }
+                        } else {
                             System.out.println("Date of Birth format is wrong");
                         }
                     }
@@ -124,11 +125,15 @@ public class PersonIdentity {
                 } else if (Objects.equals(key, "dod")) {
                     if (value != null) {
                         dod = value;
-                        String updateQuery = "update person set dod='" + dod + "' where p_id='" + person.getId() + "';";
-                        try {
-                            statement.executeUpdate(updateQuery);
-                        } catch (SQLException e) {
-                            System.out.println("Date of death not updated");
+                        dateFormat df = new dateFormat();
+                        dod = df.checkDateFormat(dod);
+                        if (dod != null) {
+                            try {
+                                String updateQuery = "update person set dod='" + dod + "' where p_id='" + person.getId() + "';";
+                                statement.executeUpdate(updateQuery);
+                            } catch (SQLException e) {
+                                System.out.println("Date of death not updated");
+                            }
                         }
                     }
                 } else if (Objects.equals(key, "dLocation")) {

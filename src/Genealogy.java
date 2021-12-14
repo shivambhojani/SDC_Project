@@ -397,12 +397,10 @@ public class Genealogy {
                 //System.out.println("MediaId = " + resultSet.getString("mediaId"));
                 finalMediaIds.add(resultSet.getString("mediaId"));
             }
-
             if (finalMediaIds.size() == 0) {
                 System.out.println("No media file found for given set of people");
                 return new ArrayList<FileIdentifier>();
             }
-
             List<FileIdentifier> mediaFilesObject = new ArrayList<>();
             String findMediaDetails = "";
 
@@ -431,7 +429,7 @@ public class Genealogy {
                 System.out.println(findMediaDetails);
 
             } else {
-                findMediaDetails = "select * from media_archieve where mediaId in (" + ss + ") order by filename asc;";
+                findMediaDetails = "select * from media_archieve where mediaId in (" + ss + ") and date is NOT NULL order by filename asc;";
                 System.out.println(findMediaDetails);
             }
 
@@ -449,7 +447,7 @@ public class Genealogy {
             /*Suppose if both the dates are valid and datesAreFine = true. So now it will add the filenames with null in the list as well*/
             if (bothDatesAreFine) {
                 System.out.println("select * from media_archieve where mediaId in (" + ss + ") where date IS NULL order by filename asc;");
-                resultSet = statement.executeQuery("select * from media_archieve where mediaId in (" + ss + ") and date IS NULL order by filename asc;");
+                resultSet = statement.executeQuery("select * from media_archieve where date IS NULL order by filename asc;");
 
                 while (resultSet.next()) {
                     FileIdentifier f = new FileIdentifier();

@@ -4,6 +4,14 @@ import java.util.*;
 public class main {
     public static void main(String[] args) {
 
+//        String dob= "1998/04/20";
+//        System.out.println(dob);
+//        dob = dob.substring(0,4) + "-" + dob.substring(5,dob.length());
+//        System.out.println(dob);
+//
+//        dob = dob.substring(0,7) + "-" + dob.substring(8,dob.length());
+//        System.out.println(dob);
+
         /*findName--------------*/
 //        Genealogy g = new Genealogy();
 //        PersonIdentity pp = g.findPerson("Shivam5");
@@ -49,19 +57,19 @@ public class main {
 
         /*find individual in media----------------*/
 
-        Genealogy gene = new Genealogy();
-        PersonIdentity p1 = gene.findPerson("Ben");
-        PersonIdentity p2 = gene.findPerson("person1");
-
-        Set<PersonIdentity> s = new HashSet<>();
-        s.add(p1);
-        //s.add(p2);
-       List<FileIdentifier> file=  gene.findIndividualsMedia(s,"1990-00-00","2000-01-01");
-
-        for(FileIdentifier ff : file)
-        {
-            System.out.println(ff.getMediaId() +" " + ff.getFileName());
-        }
+//        Genealogy gene = new Genealogy();
+//        PersonIdentity p1 = gene.findPerson("Ben");
+//        PersonIdentity p2 = gene.findPerson("person1");
+//
+//        Set<PersonIdentity> s = new HashSet<>();
+//        s.add(p1);
+//        //s.add(p2);
+//       List<FileIdentifier> file=  gene.findIndividualsMedia(s,"1990-00-00","2000-01-01");
+//
+//        for(FileIdentifier ff : file)
+//        {
+//            System.out.println(ff.getMediaId() +" " + ff.getFileName());
+//        }
         /*ADD PERSON--------------------------------------------------*/
 //        PersonIdentity person1 = new PersonIdentity();
 //        PersonIdentity person2 = new PersonIdentity();
@@ -165,33 +173,33 @@ public class main {
 //        }
 
         /*FIND PERSON AND RECORD ATTRIBUTES---------------------------*/
-//        System.out.println("############################3");
-//        Genealogy g = new Genealogy();
-//        PersonIdentity p1 = g.findPerson("Shivam");
+        System.out.println("############################3");
+        Genealogy g = new Genealogy();
+        PersonIdentity p1 = g.findPerson("Shivam");
 
-        // System.out.println(p1.getId() + p1.getPersonName());
-        // PersonIdentity p2 = g.findPerson("person1");
+        System.out.println(p1.getId() + p1.getPersonName());
+//        PersonIdentity p2 = g.findPerson("person1");
 //        PersonIdentity p3 = g.findPerson("person3");
 //        PersonIdentity p4 = g.findPerson("person4");
 
-//        System.out.println("Orignal ID: " + p1.getId());
+        System.out.println("Orignal ID: " + p1.getId());
 
 //        System.out.println("New Id: " + p2.getId());
 //        System.out.println("New Id: " + p3.getId());
 //        System.out.println("New Id: " + p4.getId());
-//        PersonIdentity record = new PersonIdentity();
-//        Map<String, String> m = new HashMap<>();
-//        m.put("dob", "2000-03-20");
-//        m.put("dod", "2021-03-20");
-//        m.put("bLocation", "London");
-//        m.put("dLocation", "Canada");
-//        m.put("gender", "female");
-//        m.put("occupation", "Sales Manager");
-//
-//        System.out.println(p1.recordAttributes(p1,m));
-//
-//
-//        System.out.println(record.recordAttributes(p1, m));
+        PersonIdentity record = new PersonIdentity();
+        Map<String, String> m = new HashMap<>();
+        m.put("dob", "1998");
+        m.put("dod", "2021-03");
+        m.put("bLocation", "London");
+        m.put("dLocation", "Canada");
+        m.put("gender", "female");
+        m.put("occupation", "Sales Manager");
+
+        System.out.println(p1.recordAttributes(p1, m));
+
+
+        System.out.println(record.recordAttributes(p1, m));
 //        System.out.println(record.recordAttributes(p2, m));
 //        System.out.println(record.recordAttributes(p3, m));
 //        System.out.println(record.recordAttributes(p4, m));
