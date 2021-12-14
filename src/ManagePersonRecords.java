@@ -427,9 +427,9 @@ public class ManagePersonRecords {
                 return false;
             }
 
-            String insertRelationship = "insert into partner_relation values (null,'" + partner1.getId() + "','" + partner2.getId() + "');";
-
-            statement.executeUpdate(insertRelationship);
+            String insertdissolution = "insert into person_dissolution values (null,'" + partner1.getId() + "','" + partner2.getId() + "');";
+            System.out.println(insertdissolution);
+            statement.executeUpdate(insertdissolution);
             statement.close();
             connect.close();
             return true;

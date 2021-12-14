@@ -6,7 +6,7 @@ public class main {
 
         /*Add Person*/
 
- //       ManagePersonRecords mpr = new ManagePersonRecords();
+       ManagePersonRecords mpr = new ManagePersonRecords();
 //        mpr.addPerson("A1");
 //        mpr.addPerson("A2");
 //        mpr.addPerson("A3");
@@ -39,6 +39,7 @@ public class main {
 //        System.out.println(mpr.recordAttributes(g.findPerson("A8"), m));
 //        System.out.println(mpr.recordAttributes(g.findPerson("A50"), m));
 
+        System.out.println(mpr.recordDissolution(g.findPerson("A1"), g.findPerson("Rachel")));
 
         /**/
         ManageMediaArchieve mma = new ManageMediaArchieve();
@@ -50,17 +51,17 @@ public class main {
 //        mma.recordMediaAttributes(g.findMediaFile("samplefile.txt"), mm);
         Set<FileIdentifier> f = g.findMediaByTag("Tag2", "1950", "2000");
 
-        for (FileIdentifier file : f)
-        {
-            System.out.println(file.getMediaId() + " " + file.getFileName());
-        }
+//        for (FileIdentifier file : f)
+//        {
+//            System.out.println(file.getMediaId() + " " + file.getFileName());
+//        }
 
         f = g.findMediaByLocation("Halifax", "1950-05" , "2000");
 
-        for (FileIdentifier file : f)
-        {
-            System.out.println(file.getMediaId() + " " + file.getFileName());
-        }
+//        for (FileIdentifier file : f)
+//        {
+//            System.out.println(file.getMediaId() + " " + file.getFileName());
+//        }
 
         /*----------*/
 

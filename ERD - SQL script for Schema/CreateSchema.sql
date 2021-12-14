@@ -44,7 +44,7 @@ CREATE TABLE `partner_relation` (
   KEY `partner2` (`partner2Id`),
   CONSTRAINT `partner1` FOREIGN KEY (`partner1Id`) REFERENCES `person` (`p_id`),
   CONSTRAINT `partner2` FOREIGN KEY (`partner2Id`) REFERENCES `person` (`p_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `person` (
   `p_id` int NOT NULL AUTO_INCREMENT,
@@ -63,7 +63,7 @@ CREATE TABLE `person_attributes` (
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `person_dissolution` (
-  `dissolutionId` int NOT NULL,
+  `dissolutionId` int NOT NULL AUTO_INCREMENT,
   `partner1Id` int NOT NULL,
   `partner2Id` int NOT NULL,
   PRIMARY KEY (`dissolutionId`),
@@ -71,7 +71,7 @@ CREATE TABLE `person_dissolution` (
   KEY `p_id2_idx` (`partner2Id`),
   CONSTRAINT `p_id1` FOREIGN KEY (`partner1Id`) REFERENCES `person` (`p_id`),
   CONSTRAINT `p_id2` FOREIGN KEY (`partner2Id`) REFERENCES `person` (`p_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `person_in_media` (
   `mediaId` int NOT NULL,
