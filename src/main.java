@@ -49,19 +49,19 @@ public class main {
 
         /*find individual in media----------------*/
 
-//        Genealogy gene = new Genealogy();
-//        PersonIdentity p1 = gene.findPerson("person3");
-//        PersonIdentity p2 = gene.findPerson("person1");
-//
-//        Set<PersonIdentity> s = new HashSet<>();
-//        s.add(p1);
-//        //s.add(p2);
-//       List<FileIdentifier> file=  gene.findIndividualsMedia(s,null,null);
-//
-//        for(FileIdentifier ff : file)
-//        {
-//            System.out.println(ff.getMediaId() +" " + ff.getFileName());
-//        }
+        Genealogy gene = new Genealogy();
+        PersonIdentity p1 = gene.findPerson("Ben");
+        PersonIdentity p2 = gene.findPerson("person1");
+
+        Set<PersonIdentity> s = new HashSet<>();
+        s.add(p1);
+        //s.add(p2);
+       List<FileIdentifier> file=  gene.findIndividualsMedia(s,"1990-00-00","2000-01-01");
+
+        for(FileIdentifier ff : file)
+        {
+            System.out.println(ff.getMediaId() +" " + ff.getFileName());
+        }
         /*ADD PERSON--------------------------------------------------*/
 //        PersonIdentity person1 = new PersonIdentity();
 //        PersonIdentity person2 = new PersonIdentity();
@@ -130,14 +130,14 @@ public class main {
 
 
         /*Find media by location*/
-        Genealogy ggn = new Genealogy();
-
-        Set<FileIdentifier> s = new HashSet<>();
-        s = ggn.findMediaByLocation("Halifax", "1960-01-01", null);
-
-        for (FileIdentifier file : s) {
-            System.out.println(file.getMediaId());
-        }
+//        Genealogy ggn = new Genealogy();
+//
+//        Set<FileIdentifier> s = new HashSet<>();
+//        s = ggn.findMediaByLocation("Halifax", "1960-01-01", null);
+//
+//        for (FileIdentifier file : s) {
+//            System.out.println(file.getMediaId());
+//        }
 
 
         /*findmedia by tag*/

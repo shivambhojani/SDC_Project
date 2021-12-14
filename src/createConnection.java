@@ -3,8 +3,6 @@ import java.sql.*;
 public class createConnection {
 
     Connection connect = null;
-    //Statement statement = null;
-    //ResultSet resultSet = null;
     String jdbcURL = "jdbc:mysql://127.0.0.1:3306";
     String username = "root";
     String password = "root";

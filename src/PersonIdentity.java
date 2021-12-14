@@ -15,13 +15,10 @@ public class PersonIdentity {
 
     PersonIdentity addPerson(String name) {
 
-        if(name==null)
-        {
+        if (name == null) {
             System.out.println("Given name is null");
             return null;
-        }
-        else if (name.trim().length()==0)
-        {
+        } else if (name.trim().length() == 0) {
             System.out.println("Given name is empty");
             return null;
         }
@@ -177,18 +174,14 @@ public class PersonIdentity {
     }
 
     Boolean recordReference(PersonIdentity person, String reference) {
-        if (person == null)
-        {
+        if (person == null) {
             System.out.println("Provided person object is null");
             return false;
         }
-        if(reference==null)
-        {
+        if (reference == null) {
             System.out.println("Given reference is null");
             return false;
-        }
-        else if (reference.trim().length()==0)
-        {
+        } else if (reference.trim().length() == 0) {
             System.out.println("Given reference is empty");
             return false;
         }
@@ -209,9 +202,7 @@ public class PersonIdentity {
                 connect.close();
                 System.out.println("Person not found");
                 return false;
-            }
-
-            else {
+            } else {
                 String insertReference = "insert into person_references values (null,'" + person.getId() + "','" + reference + "')";
                 statement.executeUpdate(insertReference);
 
@@ -230,18 +221,14 @@ public class PersonIdentity {
     }
 
     Boolean recordNote(PersonIdentity person, String note) {
-        if (person == null)
-        {
+        if (person == null) {
             System.out.println("Provided person object is null");
             return false;
         }
-        if(note==null)
-        {
+        if (note == null) {
             System.out.println("Given note is null");
             return false;
-        }
-        else if (note.trim().length()==0)
-        {
+        } else if (note.trim().length() == 0) {
             System.out.println("Given note is empty");
             return false;
         }
@@ -261,8 +248,7 @@ public class PersonIdentity {
                 connect.close();
                 System.out.println("");
                 return false;
-            }
-            else {
+            } else {
                 String insertReference = "insert into person_notes values (null,'" + person.getId() + "','" + note + "')";
                 statement.executeUpdate(insertReference);
 
@@ -279,7 +265,6 @@ public class PersonIdentity {
 
         }
     }
-
 
 
     public String getId() {

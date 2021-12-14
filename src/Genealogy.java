@@ -232,8 +232,7 @@ public class Genealogy {
             }
 
             /*if no media found, then list size will be 0*/
-            if(mediaId.size()==0)
-            {
+            if (mediaId.size() == 0) {
                 System.out.println("No media found based on the given tag value");
                 return new HashSet<FileIdentifier>();
             }
@@ -321,8 +320,7 @@ public class Genealogy {
                 mediaId.add(resultSet.getString("mediaId"));
             }
 
-            if (mediaId.size()==0)
-            {
+            if (mediaId.size() == 0) {
                 System.out.println("No media record found based on given location");
                 return new HashSet<FileIdentifier>();
             }
@@ -387,9 +385,8 @@ public class Genealogy {
                 return null;
             }
 
-            /*Query to gegt all the media files which are linking to the given set of people*/
+            /*Query to get all the media ids which are linking to the given set of people*/
             String findMediaIdbyPeople = "select mediaId from person_in_media where person in (" + s + ") group by mediaId;";
-
 
             /*getting all mediaIds*/
             List<String> finalMediaIds = new ArrayList<>();
@@ -399,6 +396,11 @@ public class Genealogy {
             while (resultSet.next()) {
                 //System.out.println("MediaId = " + resultSet.getString("mediaId"));
                 finalMediaIds.add(resultSet.getString("mediaId"));
+            }
+
+            if (finalMediaIds.size() == 0) {
+                System.out.println("No media file found for given set of people");
+                return new ArrayList<FileIdentifier>();
             }
 
             List<FileIdentifier> mediaFilesObject = new ArrayList<>();
@@ -445,9 +447,10 @@ public class Genealogy {
             }
 
             /*Suppose if both the dates are valid and datesAreFine = true. So now it will add the filenames with null in the list as well*/
-
             if (bothDatesAreFine) {
-                resultSet = statement.executeQuery("select * from media_archieve where date IS NULL order by filename asc;");
+                System.out.println("select * from media_archieve where mediaId in (" + ss + ") where date IS NULL order by filename asc;");
+                resultSet = statement.executeQuery("select * from media_archieve where mediaId in (" + ss + ") and date IS NULL order by filename asc;");
+
                 while (resultSet.next()) {
                     FileIdentifier f = new FileIdentifier();
                     f.setMediaId(resultSet.getString("mediaId"));
@@ -522,6 +525,7 @@ public class Genealogy {
         }
     }
 
+    /*this method */
     List<FileIdentifier> findBiologicalFamilyMedia(PersonIdentity person) {
 
         if (person == null) {
