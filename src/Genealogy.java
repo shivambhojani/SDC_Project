@@ -16,6 +16,21 @@ public class Genealogy {
             statement = connect.createStatement();
             statement.executeQuery("use " + conn.databaseName);
 
+
+            /*Checking number of records with the given name*/
+            /*If the number of records are more than 1, then it will throw Illegal Argument Exception*/
+            String checkRecords = "select count(*) from person where name = '" + name + "';";
+
+            resultSet = statement.executeQuery(checkRecords);
+            int number = 0;
+            if (resultSet.next()) {
+                number = Integer.parseInt(resultSet.getString("count(*)"));
+            }
+
+            if (number > 1) {
+                throw new IllegalArgumentException("More than one person found with same name");
+            }
+
             /*Checks for a person with the given name in person table*/
             String selectQuery = "select * from person where name='" + name + "';";
             resultSet = statement.executeQuery(selectQuery);
@@ -186,6 +201,23 @@ public class Genealogy {
             return null;
         }
 
+        Boolean bothDatesAreFine = true;
+        if (startDate == null || endDate == null) {
+            bothDatesAreFine = false;
+        } else if (startDate.trim().length() == 0 || endDate.trim().length() == 0) {
+            bothDatesAreFine = false;
+        }
+
+        if (bothDatesAreFine) {
+            dateFormat df = new dateFormat();
+            startDate = df.checkDateFormat(startDate);
+            endDate = df.checkDateFormat(endDate);
+        }
+
+        if (startDate == null || endDate == null) {
+            bothDatesAreFine = false;
+        }
+
         Connection connect = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -199,21 +231,14 @@ public class Genealogy {
 
             /*validating dates*/
             /*Validating Start date and end Date*/
-            Boolean bothDatesAreFine = true;
-            if (startDate == null || endDate == null) {
-                bothDatesAreFine = false;
-            } else if (startDate.trim().length() == 0 || endDate.trim().length() == 0) {
-                bothDatesAreFine = false;
-            }
+
 
             if (bothDatesAreFine) {
                 findmediabytags = "select * from media_archieve where date between '" + startDate + "' and '" + endDate + "' " +
                         "and mediaId in (select mediaId from media_tags where tag='" + tag + "');";
-                System.out.println(findmediabytags);
 
             } else {
                 findmediabytags = "select * from media_archieve where mediaId in (select mediaId from media_tags where tag = '" + tag + "');";
-                System.out.println(findmediabytags);
             }
 
             /*List to add media Ids*/
@@ -269,6 +294,22 @@ public class Genealogy {
             System.out.println("Provided location value is empty");
             return null;
         }
+        Boolean bothDatesAreFine = true;
+        if (startDate == null || endDate == null) {
+            bothDatesAreFine = false;
+        } else if (startDate.trim().length() == 0 || endDate.trim().length() == 0) {
+            bothDatesAreFine = false;
+        }
+
+        if (bothDatesAreFine) {
+            dateFormat df = new dateFormat();
+            startDate = df.checkDateFormat(startDate);
+            endDate = df.checkDateFormat(endDate);
+        }
+
+        if (startDate == null || endDate == null) {
+            bothDatesAreFine = false;
+        }
 
         Connection connect = null;
         Statement statement = null;
@@ -290,12 +331,7 @@ public class Genealogy {
 
             /*validating dates*/
             /*Validating Start date and end Date*/
-            Boolean bothDatesAreFine = true;
-            if (startDate == null || endDate == null) {
-                bothDatesAreFine = false;
-            } else if (startDate.trim().length() == 0 || endDate.trim().length() == 0) {
-                bothDatesAreFine = false;
-            }
+
 
             if (bothDatesAreFine) {
                 findmediabyLocation = "select * from media_archieve where mediaId in (select mediaId from media_attributes \n" +
@@ -356,10 +392,31 @@ public class Genealogy {
             System.out.println("Provided set of people is empty");
             return null;
         }
+
+        /*Validating Start date and end Date*/
+        Boolean bothDatesAreFine = true;
+        if (startDate == null || endDate == null) {
+            bothDatesAreFine = false;
+        } else if (startDate.trim().length() == 0 || endDate.trim().length() == 0) {
+            bothDatesAreFine = false;
+        }
+
+        if (bothDatesAreFine) {
+            dateFormat df = new dateFormat();
+            startDate = df.checkDateFormat(startDate);
+            endDate = df.checkDateFormat(endDate);
+        }
+
+        if (startDate == null || endDate == null) {
+            bothDatesAreFine = false;
+        }
+
+
         Connection connect = null;
         Statement statement = null;
         ResultSet resultSet = null;
         createConnection conn = new createConnection();
+
 
         try {
             connect = conn.startConnection();
@@ -409,13 +466,6 @@ public class Genealogy {
                 statement.close();
                 connect.close();
                 return null;
-            }
-            /*Validating Start date and end Date*/
-            Boolean bothDatesAreFine = true;
-            if (startDate == null || endDate == null) {
-                bothDatesAreFine = false;
-            } else if (startDate.trim().length() == 0 || endDate.trim().length() == 0) {
-                bothDatesAreFine = false;
             }
 
             if (bothDatesAreFine) {
@@ -506,7 +556,7 @@ public class Genealogy {
 
             /*storing references in the list*/
             while (resultSet.next()) {
-                notesandRef.add(resultSet.getString("references"));
+                notesandRef.add(resultSet.getString("personReferences"));
             }
             return notesandRef;
         } catch (SQLException e) {
@@ -923,7 +973,7 @@ public class Genealogy {
 
 
             } else if (commonAncestorsId.isEmpty()) {
-                System.out.println("No biological relation found between the given two person as they do not have any common ancestor");
+                //No biological relation found between the given two person as they do not have any common ancestor
                 br.setCousinship("None");
                 br.setRemoval("None");
             }
