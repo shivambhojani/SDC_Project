@@ -125,11 +125,15 @@ public class FileIdentifier {
                 if (Objects.equals(key, "date")) {
                     if (value != null) {
                         date = value;
-                        String updateQuery = "update media_archieve set date='" + date + "' where mediaId='" + fileIdentifier.getMediaId() + "';";
-                        try {
-                            statement.executeUpdate(updateQuery);
-                        } catch (SQLException e) {
-                            System.out.println("Problem while giving date input. Date format should be yyyy-mm-dd");
+                        dateFormat df = new dateFormat();
+                        date = df.checkDateFormat(date);
+                        if (date != null) {
+                            String updateQuery = "update media_archieve set date='" + date + "' where mediaId='" + fileIdentifier.getMediaId() + "';";
+                            try {
+                                statement.executeUpdate(updateQuery);
+                            } catch (SQLException e) {
+                                System.out.println("Problem while giving date input. Date format should be yyyy-mm-dd");
+                            }
                         }
                     }
                 } else if (Objects.equals(key, "location")) {

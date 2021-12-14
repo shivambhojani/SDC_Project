@@ -425,12 +425,11 @@ public class Genealogy {
 
             if (bothDatesAreFine) {
                 findMediaDetails = "select * from media_archieve where mediaId in (" + ss + ") " +
-                        "and date between '" + startDate + "' and '" + endDate + "' order by filename asc;";
-                System.out.println(findMediaDetails);
+                        "and date between '" + startDate + "' and '" + endDate + "' order by date,filename asc;";
 
             } else {
-                findMediaDetails = "select * from media_archieve where mediaId in (" + ss + ") and date is NOT NULL order by filename asc;";
-                System.out.println(findMediaDetails);
+                findMediaDetails = "select * from media_archieve where mediaId in (" + ss + ") and date is NOT NULL order by date,filename asc;";
+
             }
 
             /*First adding the data which is found from above queries*/
